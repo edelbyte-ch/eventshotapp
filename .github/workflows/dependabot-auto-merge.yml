@@ -13,9 +13,23 @@ jobs:
       - name: Dependabot metadata
         id: meta
         uses: dependabot/fetch-metadata@v2
-      - name: Auto-merge security patch & minor updates
+
+      - name: Checkout (PR merge result)
+        uses: actions/checkout@v4
+
+      - name: Docker build gate
+        id: build
+        run: |
+          if [ -f Dockerfile ]; then
+            echo "Root Dockerfile gefunden - baue Image zur Validierung des Updates..."
+            docker build -t ci-validate:${GITHUB_SHA} .
+          else
+            echo "Kein root-Dockerfile - Build-Gate uebersprungen."
+          fi
+
+      - name: Auto-merge (Security patch & minor, Build bestanden)
         if: ${{ steps.meta.outputs.update-type == 'version-update:semver-patch' || steps.meta.outputs.update-type == 'version-update:semver-minor' }}
-        run: gh pr merge --auto --squash "$PR_URL"
+        run: gh pr merge --squash "$PR_URL"
         env:
           PR_URL: ${{ github.event.pull_request.html_url }}
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
