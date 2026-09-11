@@ -8,23 +8,64 @@ permissions:
 jobs:
   auto-merge:
     runs-on: ubuntu-latest
-    if: ${{ github.actor == 'dependabot[bot]' }}
+    # Auf den PR-Autor pruefen, nicht auf github.actor: sobald dieser Workflow
+    # selbst einen Commit auf den PR schiebt, waere der Actor github-actions[bot]
+    # und die Bedingung liefe ins Leere.
+    if: ${{ github.event.pull_request.user.login == 'dependabot[bot]' }}
     steps:
       - name: Dependabot metadata
         id: meta
         uses: dependabot/fetch-metadata@v2
 
-      - name: Checkout (PR merge result)
+      # Den PR-Branch selbst auschecken, nicht den Merge-Ref - sonst laesst
+      # sich nichts auf den PR zurueckschieben.
+      - name: Checkout (PR-Branch)
         uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref }}
 
+      # Baut JEDES Dockerfile im Repo. Die fruehere Pruefung `if [ -f Dockerfile ]`
+      # uebersprang sich in Monorepos selbst und liess den Merge ungeprueft durch.
+      # Deshalb: kein Dockerfile = Fehler, nicht "uebersprungen". Ein Gate, das
+      # sich selbst ueberspringt, ist schlimmer als keines.
+      #
+      # Die Secrets sind reine Attrappen: syntaktisch gueltig, damit Dockerfiles
+      # mit `--mount=type=secret` (prisma.config.ts, SMTP-Prerender) ueberhaupt
+      # laden, aber kein echter Zugang. Ohne sie war das Gate in jedem Repo mit
+      # Secret-Mounts bei JEDEM Lauf rot und hat nie etwas validiert. Nicht
+      # gemountete Secrets ignoriert BuildKit - die Liste darf ein Superset sein.
+      # DATABASE_URL zusaetzlich als --build-arg: manche Dockerfiles (grabebox,
+      # edelchat) nehmen es per ARG statt per Secret; ein ungenutztes Build-Arg
+      # ist fuer BuildKit nur eine Warnung.
       - name: Docker build gate
         id: build
+        env:
+          DATABASE_URL: postgresql://ci:ci@127.0.0.1:5432/ci
+          GMAIL_USER: ci@localhost
+          GMAIL_APP_PASSWORD: ci
+          SMTP_HOST: localhost
+          SMTP_PORT: "25"
+          SMTP_SECURE: "false"
+          SMTP_USER: ci
+          SMTP_PASS: ci
+          SMTP_FROM: ci@localhost
         run: |
-          if [ -f Dockerfile ]; then
-            echo "Root Dockerfile gefunden - baue Image zur Validierung des Updates..."
-            docker build -t ci-validate:${GITHUB_SHA} .
-          else
-            echo "Kein root-Dockerfile - Build-Gate uebersprungen."
+          set -e
+          secrets=()
+          for s in DATABASE_URL GMAIL_USER GMAIL_APP_PASSWORD SMTP_HOST SMTP_PORT SMTP_SECURE SMTP_USER SMTP_PASS SMTP_FROM; do
+            secrets+=(--secret "id=$s,env=$s")
+          done
+          found=0
+          while IFS= read -r df; do
+            found=1
+            tag="ci-validate:$(echo "${df#./}" | tr '/' '-')"
+            echo "::group::docker build -f $df ."
+            docker build -f "$df" -t "$tag" "${secrets[@]}" --build-arg "DATABASE_URL=$DATABASE_URL" .
+            echo "::endgroup::"
+          done < <(find . -name Dockerfile -not -path '*/node_modules/*' -not -path './.git/*' | sort)
+          if [ "$found" = 0 ]; then
+            echo "::error::Kein Dockerfile im Repo gefunden - das Gate kann nichts validieren. Merge verweigert."
+            exit 1
           fi
 
       - name: Auto-merge (Security patch & minor, Build bestanden)
