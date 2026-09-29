@@ -33,7 +33,7 @@ export default function EventGallery({
   // 5 MB). Das Original bleibt fuer den Knopf "Sichern" — und fuer Fotos,
   // die der Backfill noch nicht erreicht hat.
   //
-  // Nachbarn laedt YARL selbst vor (carousel.preload, 2 je Seite) und haengt
+  // Nachbarn laedt YARL selbst vor (carousel.preload, unten) und haengt
   // weggeblaetterte Slides wieder aus. Das fruehere eigene new Image() pro
   // Ansicht kam obendrauf und liess sich nicht abbrechen: beim schnellen
   // Wischen stauten sich die Originale, und das gerade gezeigte Bild musste
@@ -83,6 +83,10 @@ export default function EventGallery({
         slides={slides}
         plugins={[Counter]}
         render={{ slide: renderGallerySlide }}
+        // Ein Nachbar je Seite reicht, das Thumbnail steht ohnehin sofort.
+        // Mit zweien teilten sich beim schnellen Wischen fuenf Bilder die
+        // Leitung: 5 x 440 kB bei 9 Mbit/s sind die gemessenen 1.9 s.
+        carousel={{ preload: 1 }}
         toolbar={{ buttons: [<LightboxSaveButton key='save' />, 'close'] }}
         on={{ view: ({ index }) => setIndex(index) }}
       />

@@ -62,6 +62,10 @@ export function renderGallerySlide({ slide, offset, rect }: RenderSlideProps) {
         offset={offset}
         rect={rect}
         render={renderNoSpinner}
+        // Das gezeigte Bild zuerst: YARL laedt je zwei Nachbarn pro Seite
+        // mit, und gleichberechtigt teilten sich alle fuenf die Leitung —
+        // gemessen 1.9 s bis scharf nach schnellem Wischen bei 9 Mbit/s.
+        imageProps={{ fetchPriority: offset === 0 ? 'high' : 'low' }}
         style={{ position: 'relative', width: '100%', height: '100%' }}
       />
     </div>
