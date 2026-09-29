@@ -13,7 +13,7 @@
  */
 
 import { GetObjectCommand, PutObjectCommand } from '@aws-sdk/client-s3'
-import sharp from 'sharp'
+import sharp, { type Metadata } from 'sharp'
 import { generateBlurHash } from '@/lib/image/blurhash'
 import { displayKey, thumbKey } from '@/lib/image/keys'
 import { generateDisplayImage, generateThumbnail } from '@/lib/image/resize'
@@ -51,7 +51,7 @@ export async function storeDisplayImage(
  * Pixel vor der EXIF-Drehung — hochkant gehaltene Handyfotos kamen damit
  * quer in die Datenbank (6 von 41 im gemessenen Event).
  */
-export function orientedSize(meta: sharp.Metadata) {
+export function orientedSize(meta: Metadata) {
   return {
     width: meta.autoOrient?.width ?? meta.width ?? 1,
     height: meta.autoOrient?.height ?? meta.height ?? 1,
