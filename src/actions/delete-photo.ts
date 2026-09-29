@@ -3,7 +3,8 @@
 import { requireOwnedEventAction } from '@/lib/auth-guard'
 import prisma from '@/lib/prisma'
 import { s3 } from '@/lib/s3'
-import { DeleteObjectCommand } from '@aws-sdk/client-s3'
+import { DeleteObjectsCommand } from '@aws-sdk/client-s3'
+import { displayKey, thumbKey } from '@/lib/image/keys'
 import { revalidatePath } from 'next/cache'
 
 export async function deletePhoto({
@@ -38,6 +39,7 @@ export async function deletePhoto({
       id: true,
       bucket: true,
       objectKey: true,
+      eventId: true,
     },
   })
 
@@ -46,12 +48,21 @@ export async function deletePhoto({
     return { success: true as const }
   }
 
-  // 2️⃣ Objekt aus MinIO / S3 löschen
+  // 2️⃣ Objekte aus MinIO / S3 löschen — Original samt abgeleiteten
+  // Fassungen. Bisher blieb das Thumbnail liegen; mit der Lightbox-Fassung
+  // waeren es zwei Waisen je geloeschtem Foto geworden.
   try {
     await s3.send(
-      new DeleteObjectCommand({
+      new DeleteObjectsCommand({
         Bucket: photo.bucket,
-        Key: photo.objectKey,
+        Delete: {
+          Objects: [
+            { Key: photo.objectKey },
+            { Key: thumbKey(photo.eventId, photo.id) },
+            { Key: displayKey(photo.eventId, photo.id) },
+          ],
+          Quiet: true,
+        },
       })
     )
   } catch (err) {

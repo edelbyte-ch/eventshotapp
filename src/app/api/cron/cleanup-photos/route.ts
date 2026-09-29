@@ -1,6 +1,7 @@
 import { DeleteObjectsCommand } from '@aws-sdk/client-s3'
 import { type NextRequest, NextResponse } from 'next/server'
 import prisma from '@/lib/prisma'
+import { displayKey, thumbKey } from '@/lib/image/keys'
 import { computeGalleryDeleteAt } from '@/lib/retention'
 import { s3 } from '@/lib/s3'
 
@@ -52,7 +53,7 @@ async function handle(req: NextRequest) {
   for (const event of expired) {
     const photos = await prisma.photo.findMany({
       where: { eventId: event.id },
-      select: { bucket: true, objectKey: true },
+      select: { id: true, bucket: true, objectKey: true },
     })
     if (photos.length === 0) continue
 
@@ -61,7 +62,13 @@ async function handle(req: NextRequest) {
     for (const p of photos) {
       if (!p.objectKey) continue
       const list = byBucket.get(p.bucket) ?? []
-      list.push(p.objectKey)
+      // Abgeleitete Fassungen mit: sie liegen nicht in der Datenbank und
+      // blieben sonst nach Ablauf der Aufbewahrung im Bucket zurueck.
+      list.push(
+        p.objectKey,
+        thumbKey(event.id, p.id),
+        displayKey(event.id, p.id),
+      )
       byBucket.set(p.bucket, list)
     }
 

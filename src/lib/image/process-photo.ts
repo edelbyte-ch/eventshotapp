@@ -15,10 +15,48 @@
 import { GetObjectCommand, PutObjectCommand } from '@aws-sdk/client-s3'
 import sharp from 'sharp'
 import { generateBlurHash } from '@/lib/image/blurhash'
-import { generateThumbnail } from '@/lib/image/resize'
+import { displayKey, thumbKey } from '@/lib/image/keys'
+import { generateDisplayImage, generateThumbnail } from '@/lib/image/resize'
 import prisma from '@/lib/prisma'
 import { s3 } from '@/lib/s3'
 import { getSignedViewUrl } from '@/lib/s3-presigned'
+
+const URL_TTL = 60 * 60 * 24 * 7 // 7 days
+
+/**
+ * Rechnet die Lightbox-Fassung, legt sie ab und liefert die signierte URL.
+ * Eigene Funktion, weil auch der Backfill fuer Bestandsfotos sie braucht.
+ */
+export async function storeDisplayImage(
+  photo: { id: string; eventId: string; bucket: string },
+  originalBuffer: Buffer,
+) {
+  const key = displayKey(photo.eventId, photo.id)
+
+  await s3.send(
+    new PutObjectCommand({
+      Bucket: photo.bucket,
+      Key: key,
+      Body: await generateDisplayImage(originalBuffer),
+      ContentType: 'image/jpeg',
+      CacheControl: 'public, max-age=31536000, immutable',
+    }),
+  )
+
+  return getSignedViewUrl(key, URL_TTL)
+}
+
+/**
+ * Masse so, wie das Bild angezeigt wird. meta.width/height sind die rohen
+ * Pixel vor der EXIF-Drehung — hochkant gehaltene Handyfotos kamen damit
+ * quer in die Datenbank (6 von 41 im gemessenen Event).
+ */
+export function orientedSize(meta: sharp.Metadata) {
+  return {
+    width: meta.autoOrient?.width ?? meta.width ?? 1,
+    height: meta.autoOrient?.height ?? meta.height ?? 1,
+  }
+}
 
 export async function processPhoto(photoId: string) {
   const photo = await prisma.photo.findUnique({
@@ -71,15 +109,22 @@ export async function processPhoto(photoId: string) {
   const image = sharp(originalBuffer)
   const meta = await image.metadata()
 
-  const blurHash = await generateBlurHash(originalBuffer)
-  const thumbBuffer = await generateThumbnail(originalBuffer)
+  // Die Lightbox-Fassung laeuft neben BlurHash und Thumbnail her: der Gast
+  // wartet beim Upload auf processPhoto, eine Rechnung hintendran waere
+  // spuerbar. Ein gemeinsames Promise.all, damit ein Fehler nirgends
+  // unbehandelt liegen bleibt.
+  const [blurHash, thumbBuffer, displayUrl] = await Promise.all([
+    generateBlurHash(originalBuffer),
+    generateThumbnail(originalBuffer),
+    storeDisplayImage(photo, originalBuffer),
+  ])
 
-  const thumbKey = `events/${photo.eventId}/thumb/${photo.id}.jpg`
+  const thumbObjectKey = thumbKey(photo.eventId, photo.id)
 
   await s3.send(
     new PutObjectCommand({
       Bucket: photo.bucket,
-      Key: thumbKey,
+      Key: thumbObjectKey,
       Body: thumbBuffer,
       ContentType: 'image/jpeg',
       CacheControl: 'public, max-age=31536000, immutable',
@@ -88,8 +133,8 @@ export async function processPhoto(photoId: string) {
 
   // Generate presigned URLs with 7-day expiration
   const [url, thumbUrl] = await Promise.all([
-    getSignedViewUrl(finalObjectKey, 60 * 60 * 24 * 7), // 7 days
-    getSignedViewUrl(thumbKey, 60 * 60 * 24 * 7), // 7 days
+    getSignedViewUrl(finalObjectKey, URL_TTL),
+    getSignedViewUrl(thumbObjectKey, URL_TTL),
   ])
 
   await prisma.photo.update({
@@ -99,9 +144,9 @@ export async function processPhoto(photoId: string) {
       mimeType: finalMimeType,
       url,
       thumbUrl,
+      displayUrl,
       blurHash,
-      width: meta.width ?? 1,
-      height: meta.height ?? 1,
+      ...orientedSize(meta),
     },
   })
 }

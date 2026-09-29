@@ -1,3 +1,4 @@
+import { displayKey, thumbKey } from '@/lib/image/keys'
 import { getSignedViewUrl } from '@/lib/s3-presigned'
 import prisma from '@/lib/prisma'
 import { NextRequest, NextResponse } from 'next/server'
@@ -14,7 +15,7 @@ export async function GET(req: NextRequest) {
 
   const photos = await prisma.photo.findMany({
     where: { status: 'ready' },
-    select: { id: true, objectKey: true, eventId: true },
+    select: { id: true, objectKey: true, eventId: true, displayUrl: true },
   })
 
   let updated = 0
@@ -25,16 +26,20 @@ export async function GET(req: NextRequest) {
 
     await Promise.all(
       batch.map(async (photo) => {
-        const thumbKey = `events/${photo.eventId}/thumb/${photo.id}.jpg`
-
-        const [url, thumbUrl] = await Promise.all([
+        const [url, thumbUrl, displayUrl] = await Promise.all([
           getSignedViewUrl(photo.objectKey, 60 * 60 * 24 * 7),
-          getSignedViewUrl(thumbKey, 60 * 60 * 24 * 7),
+          getSignedViewUrl(thumbKey(photo.eventId, photo.id), 60 * 60 * 24 * 7),
+          // Bestandsfotos ohne Lightbox-Fassung bleiben ohne, bis der Backfill lief.
+          photo.displayUrl
+            ? getSignedViewUrl(displayKey(photo.eventId, photo.id), 60 * 60 * 24 * 7)
+            : null,
         ])
 
         await prisma.photo.update({
           where: { id: photo.id },
-          data: { url, thumbUrl },
+          // Ohne Fassung nichts schreiben: ein parallel laufender Backfill
+          // haette sonst seine frische URL gleich wieder mit null ueberschrieben.
+          data: { url, thumbUrl, ...(displayUrl && { displayUrl }) },
         })
 
         updated++

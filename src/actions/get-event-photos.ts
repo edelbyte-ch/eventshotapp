@@ -15,6 +15,9 @@ export async function getEventPhotos(eventId: string) {
     select: {
       id: true,
       url: true,
+      displayUrl: true,
+      width: true,
+      height: true,
       blurHash: true,
       thumbUrl: true,
       createdAt: true,

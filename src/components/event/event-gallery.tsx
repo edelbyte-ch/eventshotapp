@@ -3,17 +3,21 @@
 import { useMemo, useState } from 'react'
 import Lightbox from 'yet-another-react-lightbox'
 import Counter from 'yet-another-react-lightbox/plugins/counter'
-import Download from 'yet-another-react-lightbox/plugins/download'
 
 import 'yet-another-react-lightbox/plugins/counter.css'
 import 'yet-another-react-lightbox/styles.css'
+import { LightboxSaveButton } from './lightbox-save-button'
+import { type GallerySlide, renderGallerySlide } from './lightbox-slide'
 import { EventGalleryItem } from './EventGalleryItem'
 
 type Photo = {
   id: string
   url: string
+  displayUrl: string | null
   thumbUrl: string
   blurHash: string | null
+  width: number | null
+  height: number | null
 }
 
 export default function EventGallery({
@@ -25,10 +29,28 @@ export default function EventGallery({
 }) {
   const [index, setIndex] = useState(-1)
 
-  const slides = useMemo(
+  // Die Lightbox zeigt die 1920er-Fassung statt des Originals (im Schnitt
+  // 5 MB). Das Original bleibt fuer den Knopf "Sichern" — und fuer Fotos,
+  // die der Backfill noch nicht erreicht hat.
+  //
+  // Nachbarn laedt YARL selbst vor (carousel.preload, 2 je Seite) und haengt
+  // weggeblaetterte Slides wieder aus. Das fruehere eigene new Image() pro
+  // Ansicht kam obendrauf und liess sich nicht abbrechen: beim schnellen
+  // Wischen stauten sich die Originale, und das gerade gezeigte Bild musste
+  // hinter ihnen anstehen.
+  const slides = useMemo<GallerySlide[]>(
     () =>
       photos.map((p) => ({
-        src: p.url,
+        src: p.displayUrl ?? p.url,
+        thumb: p.thumbUrl,
+        // Masse erst mit der Fassung: davor standen sie teils vor der
+        // EXIF-Drehung in der DB, der Backfill korrigiert beides zusammen.
+        ...(p.displayUrl && {
+          width: p.width ?? undefined,
+          height: p.height ?? undefined,
+        }),
+        id: p.id,
+        original: p.url,
         download: `/api/photo/${p.id}/download?event=${eventId}`,
       })),
     [photos, eventId],
@@ -59,22 +81,10 @@ export default function EventGallery({
         close={() => setIndex(-1)}
         index={index}
         slides={slides}
-        plugins={[Counter, Download]}
-        on={{
-          view: ({ index }) => {
-            setIndex(index)
-
-            // 🔥 Preload next / prev
-            const preload = (src?: string) => {
-              if (!src) return
-              const img = new Image()
-              img.src = src
-            }
-
-            preload(slides[index + 1]?.src)
-            preload(slides[index - 1]?.src)
-          },
-        }}
+        plugins={[Counter]}
+        render={{ slide: renderGallerySlide }}
+        toolbar={{ buttons: [<LightboxSaveButton key='save' />, 'close'] }}
+        on={{ view: ({ index }) => setIndex(index) }}
       />
     </>
   )

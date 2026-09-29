@@ -11,6 +11,10 @@ import { AspectRatio } from '@/components/ui/aspect-ratio'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import {
+  type GallerySlide,
+  renderGallerySlide,
+} from '@/components/event/lightbox-slide'
 
 import {
   AlertDialog,
@@ -35,7 +39,10 @@ const BATCH_SIZE = 24
 export type GalleryPhoto = {
   id: string
   url: string
+  displayUrl?: string | null
   thumbUrl?: string
+  width?: number | null
+  height?: number | null
   createdAt: Date
 }
 
@@ -77,7 +84,20 @@ export default function InteractiveGallery({
    * -------------------------------- */
   const visiblePhotos = useMemo(() => items.slice(0, visible), [items, visible])
 
-  const slides = useMemo(() => items.map((p) => ({ src: p.url })), [items])
+  // 1920er-Fassung statt Original, siehe event-gallery.tsx
+  const slides = useMemo<GallerySlide[]>(
+    () =>
+      items.map((p) => ({
+        src: p.displayUrl ?? p.url,
+        thumb: p.thumbUrl,
+        // Masse nur mit Fassung, siehe event-gallery.tsx
+        ...(p.displayUrl && {
+          width: p.width ?? undefined,
+          height: p.height ?? undefined,
+        }),
+      })),
+    [items],
+  )
 
   /* --------------------------------
    * Infinite Scroll
@@ -225,6 +245,7 @@ export default function InteractiveGallery({
         index={index}
         slides={slides}
         plugins={[Counter]}
+        render={{ slide: renderGallerySlide }}
         on={{ view: ({ index }) => setIndex(index) }}
       />
     </div>

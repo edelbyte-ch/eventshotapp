@@ -168,6 +168,10 @@ model Photo {
 
   thumbUrl String
 
+  // Verkleinerte Fassung fuer die Lightbox (max. 1920 px). Null bei Fotos,
+  // die vor ihrer Einfuehrung hochgeladen und noch nicht nachgerechnet sind.
+  displayUrl String?
+
   originalName String
   mimeType     String
   size         Int
