@@ -1,7 +1,7 @@
 'use client'
 
+import { useEffect, useRef, useState } from 'react'
 import {
-  ImageSlide,
   isImageSlide,
   type RenderSlideProps,
   type SlideImage,
@@ -16,8 +16,11 @@ export type GallerySlide = SlideImage & {
   download?: string
 }
 
-// Nur den Ladekreis ausblenden — die Vorschau steht an seiner Stelle.
-const renderNoSpinner = { iconLoading: () => null }
+/**
+ * Wie lange ein Nachbar-Slide ruhig stehen muss, bevor sein grosses Bild
+ * geladen wird. Wer schneller weiterwischt, braucht es nie.
+ */
+const NEIGHBOUR_DELAY = 200
 
 /**
  * Lightbox-Slide mit dem Thumbnail als Sofortbild.
@@ -39,13 +42,73 @@ export function renderGallerySlide({ slide, offset, rect }: RenderSlideProps) {
 
   // Nicht ueber die Originalgroesse hinaus, wie YARL selbst auch.
   const scale = Math.min(1, rect.width / s.width, rect.height / s.height)
-  const width = Math.round(s.width * scale)
-  const height = Math.round(s.height * scale)
+
+  return (
+    <ProgressiveSlide
+      src={s.src}
+      thumb={s.thumb}
+      alt={s.alt ?? ''}
+      offset={offset}
+      width={Math.round(s.width * scale)}
+      height={Math.round(s.height * scale)}
+    />
+  )
+}
+
+/**
+ * Das grosse Bild laedt nur, wenn es gezeigt wird — oder als Nachbar, der
+ * einen Moment ruhig steht. Und ein unfertiger Download wird abgebrochen,
+ * sobald der Slide nicht mehr dran ist.
+ *
+ * Mit YARLs eigenem ImageSlide lief jedes Bild, an dem man vorbeiwischte,
+ * zu Ende: ein <img> aus dem DOM zu nehmen bricht den Abruf nicht ab. Nach
+ * acht schnellen Wischern stand das gesuchte Bild hinter einem Stau halb
+ * geladener Vorgaenger — in Produktion gemessen 2 s bis scharf bei 9 Mbit/s,
+ * obwohl es selbst nur 440 kB wiegt.
+ */
+function ProgressiveSlide({
+  src,
+  thumb,
+  alt,
+  offset,
+  width,
+  height,
+}: {
+  src: string
+  thumb: string
+  alt: string
+  offset: number
+  width: number
+  height: number
+}) {
+  const current = offset === 0
+  const [armed, setArmed] = useState(current)
+  const [loaded, setLoaded] = useState(false)
+  const img = useRef<HTMLImageElement>(null)
+
+  useEffect(() => {
+    if (current) {
+      setArmed(true)
+      return
+    }
+    setArmed(false)
+    const timer = setTimeout(() => setArmed(true), NEIGHBOUR_DELAY)
+    return () => clearTimeout(timer)
+  }, [current])
+
+  // Beim Aushaengen den laufenden Abruf abbrechen: erst ein leeres src
+  // stoppt ihn, das Entfernen des Elements allein nicht.
+  useEffect(() => {
+    const el = img.current
+    return () => {
+      if (el && !el.complete) el.src = ''
+    }
+  }, [armed])
 
   return (
     <div style={{ position: 'relative', width, height }}>
       <img
-        src={s.thumb}
+        src={thumb}
         alt=''
         aria-hidden
         draggable={false}
@@ -57,17 +120,31 @@ export function renderGallerySlide({ slide, offset, rect }: RenderSlideProps) {
           objectFit: 'contain',
         }}
       />
-      <ImageSlide
-        slide={s}
-        offset={offset}
-        rect={rect}
-        render={renderNoSpinner}
-        // Das gezeigte Bild zuerst: YARL laedt je zwei Nachbarn pro Seite
-        // mit, und gleichberechtigt teilten sich alle fuenf die Leitung —
-        // gemessen 1.9 s bis scharf nach schnellem Wischen bei 9 Mbit/s.
-        imageProps={{ fetchPriority: offset === 0 ? 'high' : 'low' }}
-        style={{ position: 'relative', width: '100%', height: '100%' }}
-      />
+      {(armed || loaded) && (
+        <img
+          ref={img}
+          src={src}
+          alt={alt}
+          draggable={false}
+          decoding='async'
+          fetchPriority={current ? 'high' : 'low'}
+          onLoad={() => setLoaded(true)}
+          // YARL-Klassen: touch-action, keine Textauswahl, und _loading
+          // haelt das Bild unsichtbar, bis es fertig ist.
+          className={
+            loaded
+              ? 'yarl__slide_image'
+              : 'yarl__slide_image yarl__slide_image_loading'
+          }
+          style={{
+            position: 'relative',
+            width: '100%',
+            height: '100%',
+            maxWidth: 'none',
+            maxHeight: 'none',
+          }}
+        />
+      )}
     </div>
   )
 }
