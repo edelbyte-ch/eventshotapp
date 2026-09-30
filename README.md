@@ -1,5 +1,14 @@
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
+## Preise & Aktionen
+
+- **Preise** stehen ausschliesslich in `src/lib/pricing.ts` (`PLAN_PRICES`, Rappen). Karten, Buchungsdialog, Checkout, Schema.org und Umsatzübersicht leiten daraus ab.
+- **Aktionen** stehen in `src/lib/promotions.ts` (`PROMOTIONS`). Massgeblich ist das **Eventdatum** (reines Kalenderdatum `yyyy-MM-dd`, nie ein UTC-Zeitstempel), nicht das Buchungsdatum.
+  - Neue Aktion: Eintrag mit `id`, `name`, `discountValue` (Prozent), `eligibleEventMonths`, optional `eventDateFrom/To` und `bookingFrom/To` anlegen.
+  - Abschalten: `enabled: false`. Nach `bookingTo` verschwinden Hinweise und Aktionspreise automatisch (Marketingseiten spätestens nach einer Stunde).
+- **Server ist Source of Truth**: `createEventCheckout` rechnet den Preis aus Paket + Datum selbst und übergibt ihn als `price_data` an Stripe (kein Coupon, damit Gutscheincodes weiter funktionieren). Der Webhook rechnet mit der Aktion aus der Session nach, gleicht mit `amount_subtotal` ab und speichert den Preis-Snapshot am Event (`regularPrice`, `discountAmount`, `finalPrice`, `amountPaid`, `promotionId`, …).
+- Tests: `pnpm test`
+
 ## Getting Started
 
 First, run the development server:

@@ -1,3 +1,5 @@
+import { formatChf, PLAN_PRICES } from '@/lib/pricing'
+
 export const siteConfig = {
   name: 'EventShot',
   description: 'Live Foto-Sharing Plattform für Veranstaltungen',
@@ -101,10 +103,14 @@ export const faqs = [
   },
 ]
 
+// Preise aus lib/pricing abgeleitet, nie von Hand: sonst verspricht die Karte
+// etwas anderes, als Stripe abbucht.
 export const pricingPlans = [
   {
     name: 'Basic',
-    price: 'CHF 49.-',
+    plan: 'BASIC' as const,
+    priceRappen: PLAN_PRICES.BASIC,
+    price: formatChf(PLAN_PRICES.BASIC, 'list'),
     duration: 'pro Event',
     description: 'Geburtstage, kleine Familienfeste, private Anlässe',
 
@@ -122,7 +128,9 @@ export const pricingPlans = [
   },
   {
     name: 'Premium',
-    price: 'CHF 99.-',
+    plan: 'PREMIUM' as const,
+    priceRappen: PLAN_PRICES.PREMIUM,
+    price: formatChf(PLAN_PRICES.PREMIUM, 'list'),
     duration: 'pro Event',
     description: 'Hochzeiten, runde Geburtstage, Vereinsfeste',
 
@@ -143,7 +151,9 @@ export const pricingPlans = [
   },
   {
     name: 'Enterprise',
-    price: 'CHF 149.-',
+    plan: 'ENTERPRISE' as const,
+    priceRappen: PLAN_PRICES.ENTERPRISE,
+    price: formatChf(PLAN_PRICES.ENTERPRISE, 'list'),
     duration: 'pro Event',
     description: 'Firmenanlässe, Konferenzen, Messen, Galas',
 

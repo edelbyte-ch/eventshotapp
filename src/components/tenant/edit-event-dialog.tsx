@@ -30,13 +30,23 @@ import { toast } from 'sonner'
 import { updateEvent } from '@/actions/event'
 import { EventWithCount } from '@/types/EventWithCount'
 
+/**
+ * Das Eventdatum ist ein reines Kalenderdatum (@db.Date, Mitternacht UTC).
+ * Ueber die Browser-Zeitzone formatiert, wurde westlich von UTC aus dem
+ * 01.12. der 30.11. – und beim Speichern still verschoben.
+ */
+function toLocalDate(isoDate: string) {
+  const [y, m, d] = isoDate.split('-').map(Number)
+  return new Date(y, m - 1, d)
+}
+
 export function EditEventDialog({ event }: { event: EventWithCount }) {
   const [open, setOpen] = React.useState(false)
   const [formData, setFormData] = React.useState({
     name: event.name,
     location: event.location || '',
     description: event.description || '',
-    date: format(event.date, 'yyyy-MM-dd'),
+    date: event.date.toISOString().slice(0, 10),
   })
   const [loading, setLoading] = React.useState(false)
   const [datePickerOpen, setDatePickerOpen] = React.useState(false)
@@ -58,7 +68,7 @@ export function EditEventDialog({ event }: { event: EventWithCount }) {
         name: event.name,
         location: event.location || '',
         description: event.description || '',
-        date: format(event.date, 'yyyy-MM-dd'),
+        date: event.date.toISOString().slice(0, 10),
       })
       setLoading(false)
     }
@@ -181,7 +191,7 @@ export function EditEventDialog({ event }: { event: EventWithCount }) {
                     >
                       <CalendarIcon className="mr-2 h-4 w-4" />
                       {formData.date ? (
-                        format(new Date(formData.date), 'PPP', { locale: de })
+                        format(toLocalDate(formData.date), 'PPP', { locale: de })
                       ) : (
                         <span>Datum wählen</span>
                       )}
@@ -192,7 +202,7 @@ export function EditEventDialog({ event }: { event: EventWithCount }) {
                       mode="single"
                       locale={de}
                       selected={
-                        formData.date ? new Date(formData.date) : undefined
+                        formData.date ? toLocalDate(formData.date) : undefined
                       }
                       onSelect={(date) => {
                         setDatePickerOpen(false)

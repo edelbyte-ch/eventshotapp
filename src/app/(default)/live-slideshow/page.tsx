@@ -6,6 +6,7 @@ import {
   Timer,
 } from "lucide-react";
 import type { Metadata } from "next";
+import { formatChf, PLAN_PRICES } from "@/lib/pricing";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { ScrollReveal } from "@/components/ui/motion";
@@ -49,7 +50,7 @@ const merkmale = [
 const plaene = [
   {
     name: "Basic",
-    price: "CHF 49.-",
+    price: formatChf(PLAN_PRICES.BASIC, "list"),
     lines: [
       "Live-Slideshow mit unbegrenzten Foto-Uploads",
       "Digitale Galerie für 7 Tage",
@@ -58,7 +59,7 @@ const plaene = [
   },
   {
     name: "Premium",
-    price: "CHF 99.-",
+    price: formatChf(PLAN_PRICES.PREMIUM, "list"),
     highlighted: true,
     lines: [
       "Einstellbare Anzeigedauer je Bild",
@@ -68,7 +69,7 @@ const plaene = [
   },
   {
     name: "Enterprise",
-    price: "CHF 149.-",
+    price: formatChf(PLAN_PRICES.ENTERPRISE, "list"),
     lines: [
       "Erweiterte Slideshow-Einstellungen",
       "Eigenes Branding in der Slideshow",

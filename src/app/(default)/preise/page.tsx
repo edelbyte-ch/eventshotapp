@@ -1,22 +1,30 @@
 import { ArrowRight, Check, Minus } from 'lucide-react'
 import type { Metadata } from 'next'
 import Link from 'next/link'
+import { PlanPrice } from '@/components/promotion/plan-price'
 import { Button } from '@/components/ui/button'
 import { ScrollReveal } from '@/components/ui/motion'
 import { pricingPlans } from '@/lib/constants'
+import { promotionMonthsLabel } from '@/lib/promotions'
+import { getDisplayPromotion } from '@/lib/promotions.server'
 import { buildMetadata } from '@/lib/seo/metadata'
 import { breadcrumbNode, faqNode, graph } from '@/lib/seo/schema'
 
+const PREISE = pricingPlans.map((p) => p.price.replace('CHF ', ''))
+
 export const metadata: Metadata = buildMetadata({
   path: '/preise',
-  title: 'Preise – CHF 49.-, 99.- oder 149.- pro Event',
+  title: `Preise – CHF ${PREISE[0]}, ${PREISE[1]} oder ${PREISE[2]} pro Event`,
   description:
     'Drei Pakete, ein Einmalpreis pro Event: 1 bis unbegrenzt Slideshow-Screens und 7 bis 90 Tage digitale Galerie. Registrierung kostenlos.',
 })
 
 /** Vergleichszeilen – alle Werte stammen aus `pricingPlans` in `@/lib/constants`. */
 const COMPARISON: { label: string; values: [string, string, string] }[] = [
-  { label: 'Preis pro Event', values: ['CHF 49.-', 'CHF 99.-', 'CHF 149.-'] },
+  {
+    label: 'Preis pro Event',
+    values: pricingPlans.map((p) => p.price) as [string, string, string],
+  },
   { label: 'Foto-Uploads', values: ['unbegrenzt', 'unbegrenzt', 'unbegrenzt'] },
   { label: 'Slideshow-Screens', values: ['1', '3', 'unbegrenzt'] },
   { label: 'Digitale Galerie', values: ['7 Tage', '30 Tage', '90 Tage'] },
@@ -97,7 +105,9 @@ const jsonLd = graph(
   faqNode(FAQ),
 )
 
-export default function PreisePage() {
+export default async function PreisePage() {
+  const promotion = await getDisplayPromotion()
+
   return (
     <div className='container max-w-5xl py-16 space-y-20'>
       <script
@@ -148,6 +158,15 @@ export default function PreisePage() {
               Alle Angaben gelten pro Event und in Schweizer Franken. Gebucht
               wird das Paket erst, wenn dein Datum feststeht.
             </p>
+            {promotion && (
+              <p className='max-w-2xl text-sm text-muted-foreground'>
+                <span className='font-semibold text-primary'>
+                  {promotion.name}:
+                </span>{' '}
+                Liegt dein Event im {promotionMonthsLabel(promotion)}, wird der
+                Rabatt beim Buchen automatisch abgezogen – ganz ohne Code.
+              </p>
+            )}
           </div>
 
           <div className='grid gap-4 md:grid-cols-3'>
@@ -170,12 +189,12 @@ export default function PreisePage() {
                   <p className='mt-1 text-sm text-muted-foreground'>
                     {plan.description}
                   </p>
-                  <p className='mt-4 flex items-baseline'>
-                    <span className='text-3xl font-bold'>{plan.price}</span>
-                    <span className='ml-1 text-muted-foreground'>
-                      {plan.duration}
-                    </span>
-                  </p>
+                  <PlanPrice
+                    regularPrice={plan.priceRappen}
+                    duration={plan.duration}
+                    promotion={promotion}
+                    className='mt-4'
+                  />
                 </div>
                 <ul className='mt-6 space-y-3 text-sm'>
                   {plan.features.map((feature) => (

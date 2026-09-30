@@ -112,6 +112,21 @@ model Event {
 
   stripeSessionId String? @unique
 
+  // Preis-Snapshot zum Kaufzeitpunkt, Betraege in Rappen. Haelt fest, was
+  // gebucht und bezahlt wurde, auch wenn sich Preise oder Aktionen spaeter
+  // aendern. null bei Events ohne Checkout (Demo, Betreiber, Altbestand).
+  currency        String?
+  regularPrice    Int?
+  discountPercent Int?
+  discountAmount  Int?
+  // Preis nach Aktion = Betrag der Stripe-Position.
+  finalPrice      Int?
+  // Tatsaechlich bezahlt (amount_total); tiefer als finalPrice, wenn im
+  // Checkout zusaetzlich ein Gutscheincode eingeloest wurde.
+  amountPaid      Int?
+  promotionId     String?
+  promotionName   String?
+
   photos    Photo[]
   slideshow EventSlideshowSettings?
 

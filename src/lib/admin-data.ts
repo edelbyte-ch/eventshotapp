@@ -101,11 +101,12 @@ export type CustomerOverview = {
  * Betreiber angelegte und Demo-Events tragen keine — daran, und nicht am
  * Plan, laesst sich Umsatz von Kulanz unterscheiden.
  *
- * Der Preis kommt aus PLAN_PRICES, nicht aus Stripe: das ist der Listenpreis
- * zum Zeitpunkt der Anzeige. Wer je einen Rabattcode einloest
- * (allow_promotion_codes steht im Checkout auf true), sieht hier zu viel.
- * Fuer eine Buchhaltung taugt die Zahl deshalb nicht, fuer einen Ueberblick
- * schon — sie ist entsprechend beschriftet.
+ * Umsatz: seit dem Preis-Snapshot (30.09.2026) der tatsaechlich bezahlte
+ * Betrag (amountPaid, inkl. Aktionen und Gutscheincodes). Aeltere Events
+ * haben keinen Snapshot und zaehlen weiter mit dem Listenpreis aus
+ * PLAN_PRICES — wer damals einen Rabattcode einloeste, erscheint dort zu
+ * hoch. Fuer eine Buchhaltung taugt die Summe deshalb nicht, fuer einen
+ * Ueberblick schon — sie ist entsprechend beschriftet.
  */
 export async function getCustomerOverview(): Promise<CustomerOverview> {
   const [tenants, verwaisteUser] = await Promise.all([
@@ -125,6 +126,7 @@ export async function getCustomerOverview(): Promise<CustomerOverview> {
             isDemo: true,
             uploadLimit: true,
             stripeSessionId: true,
+            amountPaid: true,
             _count: { select: { photos: true } },
           },
         },
@@ -157,7 +159,10 @@ export async function getCustomerOverview(): Promise<CustomerOverview> {
       bezahlteEvents: bezahlt.length,
       gratisEvents: echte.length - bezahlt.length,
       fotos: t.events.reduce((n, e) => n + e._count.photos, 0),
-      umsatzRappen: bezahlt.reduce((n, e) => n + (PLAN_PRICES[e.plan] ?? 0), 0),
+      umsatzRappen: bezahlt.reduce(
+        (n, e) => n + (e.amountPaid ?? PLAN_PRICES[e.plan] ?? 0),
+        0,
+      ),
       demoFotos: demo ? demo._count.photos : null,
       demoGrenze: demo ? (demo.uploadLimit ?? null) : null,
       letztesEvent: echte.reduce<Date | null>(

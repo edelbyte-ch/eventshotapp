@@ -21,27 +21,45 @@ import {
   PopoverTrigger,
 } from '@/components/ui/popover'
 import { Textarea } from '@/components/ui/textarea'
+import { pricingPlans } from '@/lib/constants'
+import { formatChf, type PlanId } from '@/lib/pricing'
+import {
+  type EventDate,
+  getActivePromotion,
+  getPromotionById,
+  type Promotion,
+  parseEventDate,
+  promotionMonthsLabel,
+  promotionPercentLabel,
+  quotePrice,
+} from '@/lib/promotions'
 import { cn } from '@/lib/utils'
 import { format } from 'date-fns'
 import {
   Calendar as CalendarIcon,
   CalendarPlus,
+  CheckCircle2,
   FileText,
   MapPin,
+  Receipt,
+  Snowflake,
 } from 'lucide-react'
 import * as React from 'react'
 import { useEffect } from 'react'
 import { de } from 'react-day-picker/locale'
 import { PlanPicker } from './plan-picker'
 
-type PlanEnum = 'BASIC' | 'PREMIUM' | 'ENTERPRISE'
+/** Kalenderdatum als lokales Date – nur fuer Anzeige und Kalender. */
+function toLocalDate(date: EventDate) {
+  return new Date(date.year, date.month - 1, date.day)
+}
 
 export function NewEventDialog({
   tenantId,
   defaultPlan = 'PREMIUM',
 }: {
   tenantId: number
-  defaultPlan?: PlanEnum
+  defaultPlan?: PlanId
 }) {
   const [open, setOpen] = React.useState(false)
   const [formData, setFormData] = React.useState({
@@ -52,6 +70,16 @@ export function NewEventDialog({
   })
   const [loading, setLoading] = React.useState(false)
   const [datePickerOpen, setDatePickerOpen] = React.useState(false)
+  const [plan, setPlan] = React.useState<PlanId>(defaultPlan)
+  // Beim Oeffnen bestimmt, nicht beim Rendern: so haengt die Vorschau nicht
+  // an der Uhrzeit des Server-Renderings.
+  const [promotion, setPromotion] = React.useState<Promotion | null>(null)
+
+  // Vorschau mit derselben Rechnung wie der Server. Verbindlich ist nur
+  // dessen Ergebnis – er rechnet beim Checkout neu und vertraut dem nicht.
+  const eventDate = parseEventDate(formData.date)
+  const quote = eventDate ? quotePrice(plan, eventDate, { promotion }) : null
+  const planName = pricingPlans.find((p) => p.plan === plan)?.name ?? plan
 
   // Check if form is valid
   const isFormValid = React.useMemo(() => {
@@ -81,16 +109,19 @@ export function NewEventDialog({
 
   // Reset form when dialog closes
   useEffect(() => {
-    if (!open) {
-      setFormData({
-        name: '',
-        location: '',
-        description: '',
-        date: '',
-      })
-      setLoading(false)
+    if (open) {
+      setPromotion(getActivePromotion())
+      return
     }
-  }, [open])
+    setFormData({
+      name: '',
+      location: '',
+      description: '',
+      date: '',
+    })
+    setPlan(defaultPlan)
+    setLoading(false)
+  }, [open, defaultPlan])
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -122,12 +153,21 @@ export function NewEventDialog({
                 location: fd.get('location') as string,
                 description: fd.get('description') as string,
                 date: fd.get('date') as string,
-                plan: fd.get('plan') as any,
+                plan: fd.get('plan') as PlanId,
+                // Nur zum Abgleich: weicht der Serverpreis ab (z. B. weil die
+                // Aktion eben endete), wird nicht still anders abgebucht.
+                expectedTotal: quote?.finalPrice,
               })
 
               if (!res.ok) {
                 setLoading(false)
                 toast.error(res.message)
+                // Serverstand uebernehmen (z. B. Aktion eben abgelaufen oder
+                // Geraeteuhr falsch): Zusammenfassung und Knopf zeigen dann
+                // den verbindlichen Betrag.
+                if ('promotionId' in res) {
+                  setPromotion(getPromotionById(res.promotionId))
+                }
                 return
               }
 
@@ -225,8 +265,8 @@ export function NewEventDialog({
                       disabled={loading}
                     >
                       <CalendarIcon className="mr-2 h-4 w-4" />
-                      {formData.date ? (
-                        format(new Date(formData.date), 'PPP', { locale: de })
+                      {eventDate ? (
+                        format(toLocalDate(eventDate), 'PPP', { locale: de })
                       ) : (
                         <span>Datum wählen</span>
                       )}
@@ -236,8 +276,9 @@ export function NewEventDialog({
                     <Calendar
                       mode="single"
                       locale={de}
-                      selected={
-                        formData.date ? new Date(formData.date) : undefined
+                      selected={eventDate ? toLocalDate(eventDate) : undefined}
+                      defaultMonth={
+                        eventDate ? toLocalDate(eventDate) : undefined
                       }
                       onSelect={(date) => {
                         setDatePickerOpen(false)
@@ -257,6 +298,13 @@ export function NewEventDialog({
                   value={formData.date}
                   required
                 />
+                {promotion && (
+                  <PromotionHint
+                    promotion={promotion}
+                    eligible={quote !== null && quote.discountAmount > 0}
+                    hasDate={eventDate !== null}
+                  />
+                )}
               </div>
             </div>
 
@@ -270,9 +318,56 @@ export function NewEventDialog({
               </div>
 
               <div className="space-y-2">
-                <PlanPicker defaultPlan={defaultPlan} />
+                <PlanPicker
+                  value={plan}
+                  onChange={setPlan}
+                  eventDate={eventDate}
+                  promotion={promotion}
+                />
               </div>
             </div>
+
+            {/* Preiszusammenfassung vor Stripe: der Endbetrag steht hier und
+                auf dem Knopf, nicht erst auf der Zahlungsseite. */}
+            {quote && eventDate && (
+              <div className="space-y-4">
+                <div className="flex items-center gap-2 pb-2 border-b border-border/50">
+                  <Receipt className="h-4 w-4 text-primary" />
+                  <h3 className="font-semibold text-sm uppercase tracking-wide text-muted-foreground">
+                    Zusammenfassung
+                  </h3>
+                </div>
+                <dl className="rounded-lg border border-border bg-muted/30 p-4 text-sm space-y-2">
+                  <SummaryRow label="Paket" value={planName} />
+                  <SummaryRow
+                    label="Eventdatum"
+                    value={format(toLocalDate(eventDate), 'PPP', { locale: de })}
+                  />
+                  <div className="border-t border-border/60 !my-3" />
+                  <SummaryRow
+                    label="Regulärer Preis"
+                    value={formatChf(quote.regularPrice)}
+                  />
+                  {quote.promotion && (
+                    <SummaryRow
+                      label={`${quote.promotion.name} −${quote.discountPercent}\u00A0%`}
+                      value={formatChf(-quote.discountAmount)}
+                      className="text-primary"
+                    />
+                  )}
+                  <div className="border-t border-border/60 !my-3" />
+                  <SummaryRow
+                    label="Total"
+                    value={formatChf(quote.finalPrice)}
+                    className="text-base font-semibold"
+                  />
+                </dl>
+                <p className="text-xs text-muted-foreground">
+                  Einmalpreis für dieses Event. Du wirst zur sicheren Zahlung
+                  bei Stripe weitergeleitet.
+                </p>
+              </div>
+            )}
           </form>
         </div>
 
@@ -308,14 +403,75 @@ export function NewEventDialog({
                     d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
                   />
                 </svg>
-                Wird angelegt...
+                Weiterleitung zur Zahlung…
               </span>
+            ) : quote ? (
+              `${formatChf(quote.finalPrice)} bezahlen`
             ) : (
-              'Event anlegen'
+              'Weiter zur Zahlung'
             )}
           </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
+  )
+}
+
+function SummaryRow({
+  label,
+  value,
+  className,
+}: {
+  label: string
+  value: string
+  className?: string
+}) {
+  return (
+    <div className={cn('flex items-baseline justify-between gap-4', className)}>
+      <dt>{label}</dt>
+      <dd className="tabular-nums whitespace-nowrap">{value}</dd>
+    </div>
+  )
+}
+
+/**
+ * Hinweis unter dem Datum. Beantwortet die Frage "wie bekomme ich die
+ * Aktion?", bevor sie gestellt wird – und reagiert sofort aufs Datum.
+ */
+function PromotionHint({
+  promotion,
+  eligible,
+  hasDate,
+}: {
+  promotion: Promotion
+  eligible: boolean
+  hasDate: boolean
+}) {
+  const percent = promotionPercentLabel(promotion)
+  const months = promotionMonthsLabel(promotion)
+
+  return (
+    <p
+      aria-live="polite"
+      className={cn(
+        'flex items-start gap-2 rounded-md px-3 py-2 text-sm',
+        eligible
+          ? 'bg-primary/10 text-primary font-medium'
+          : 'bg-muted/50 text-muted-foreground',
+      )}
+    >
+      {eligible ? (
+        <CheckCircle2 className="mt-0.5 size-4 shrink-0" aria-hidden />
+      ) : (
+        <Snowflake className="mt-0.5 size-4 shrink-0" aria-hidden />
+      )}
+      <span>
+        {eligible
+          ? `${percent} ${promotion.name} aktiviert`
+          : hasDate
+            ? `Die ${promotion.name} gilt für Events im ${months}.`
+            : `Für Events im ${months} erhältst du automatisch ${percent} ${promotion.name}.`}
+      </span>
+    </p>
   )
 }

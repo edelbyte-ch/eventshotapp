@@ -1,6 +1,7 @@
 import { ServerIcon, ShieldCheckIcon, Trash2Icon } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
+import { PromoHeroHint } from '../promotion/promo-hero-hint'
 import { FadeIn, StaggerContainer, StaggerItem } from '../ui/motion'
 import HeroButtons from './hero-buttons'
 import HeroContainer from './hero-container'
@@ -36,6 +37,9 @@ export function Hero() {
             {/* Bewusst NICHT in StaggerItem: das schreibt style="opacity:0"
                 ins SSR-HTML und nimmt der H1 die LCP-Kandidatur. */}
             <div>
+              {/* Aktionshinweis ueber der H1 statt neben den Knoepfen: so
+                  bleibt "Jetzt starten" der primaere Schritt. */}
+              <PromoHeroHint />
               <h1 className="font-bold text-4xl md:text-5xl lg:text-6xl tracking-tight text-white mb-4 sm:mb-6">
                 Erlebe <span className="text-primary">Momente</span>,
                 <br />

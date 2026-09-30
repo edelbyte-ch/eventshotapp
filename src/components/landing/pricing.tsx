@@ -1,8 +1,13 @@
+import { PlanPrice } from '@/components/promotion/plan-price'
 import { ScrollReveal } from '@/components/ui/motion'
 import { pricingPlans } from '@/lib/constants'
+import { promotionMonthsLabel } from '@/lib/promotions'
+import { getDisplayPromotion } from '@/lib/promotions.server'
 import { Check } from 'lucide-react'
 import Link from 'next/link'
-export function Pricing() {
+export async function Pricing() {
+  const promotion = await getDisplayPromotion()
+
   return (
     <section id="pricing" className="py-16 bg-muted/30">
       <div className="container">
@@ -62,12 +67,12 @@ export function Pricing() {
                     {plan.description}
                   </p>
 
-                  <div className="flex items-baseline mb-6">
-                    <span className="text-3xl font-bold">{plan.price}</span>
-                    <span className="text-muted-foreground ml-1">
-                      {plan.duration}
-                    </span>
-                  </div>
+                  <PlanPrice
+                    regularPrice={plan.priceRappen}
+                    duration={plan.duration}
+                    promotion={promotion}
+                    className="mb-6"
+                  />
 
                   <ul className="space-y-3 mb-8">
                     {plan.features.map((feature, featureIndex) => (
@@ -82,6 +87,14 @@ export function Pricing() {
             </div>
           ))}
         </div>
+
+        {promotion && (
+          <p className="mx-auto mt-6 max-w-2xl text-center text-sm text-muted-foreground">
+            {promotion.name}: Wähle beim Buchen ein Datum im{' '}
+            {promotionMonthsLabel(promotion)} – der Rabatt wird automatisch
+            abgezogen, ganz ohne Code.
+          </p>
+        )}
 
         <div className="text-center mt-12 text-muted-foreground">
           <p>

@@ -3,8 +3,14 @@
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 import { Prisma } from '@/generated/prisma/client'
-import { requireOwnedEventAction } from '@/lib/auth-guard'
+import { isCurrentUserAdmin, requireOwnedEventAction } from '@/lib/auth-guard'
 import prisma from '@/lib/prisma'
+import {
+  getPromotionById,
+  isPromotionEligible,
+  parseEventDate,
+  promotionMonthsLabel,
+} from '@/lib/promotions'
 
 /**
  * Hier stand bis 02.09.2026 zusaetzlich `createEvent`.
@@ -24,7 +30,10 @@ import prisma from '@/lib/prisma'
 
 // --- Server Action: Event bearbeiten ---
 export async function updateEvent(eventId: string, formData: FormData) {
-  const guard = await requireOwnedEventAction(eventId, { id: true })
+  const guard = await requireOwnedEventAction(eventId, {
+    id: true,
+    promotionId: true,
+  })
   if (!guard.ok) {
     return { ok: false as const, message: guard.message }
   }
@@ -39,6 +48,21 @@ export async function updateEvent(eventId: string, formData: FormData) {
   }
   if (Number.isNaN(date.getTime())) {
     return { ok: false as const, message: 'Bitte gib ein gültiges Datum an.' }
+  }
+
+  // Mit Aktion gebucht? Dann bleibt das Datum im Aktionszeitraum – sonst
+  // liesse sich rabattiert fuer Dezember buchen und danach auf Juni
+  // verschieben. Der Betreiber darf aus Kulanz trotzdem verschieben.
+  const promotion = getPromotionById(guard.event.promotionId)
+  if (
+    promotion &&
+    !isPromotionEligible(promotion, parseEventDate(formData.get('date'))) &&
+    !(await isCurrentUserAdmin())
+  ) {
+    return {
+      ok: false as const,
+      message: `Dieses Event wurde mit der ${promotion.name} gebucht – das Datum muss im ${promotionMonthsLabel(promotion)} bleiben. Für eine Verschiebung melde dich bitte bei info@edelbyte.ch.`,
+    }
   }
 
   try {

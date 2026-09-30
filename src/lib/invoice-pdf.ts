@@ -1,6 +1,7 @@
 // lib/invoice-pdf.ts
 import { PDFDocument, StandardFonts, rgb } from 'pdf-lib'
 import fs from 'fs'
+import { formatChf } from '@/lib/pricing'
 
 type InvoiceData = {
   invoiceNumber: string
@@ -9,6 +10,11 @@ type InvoiceData = {
   plan: string
   amountCHF: number
   date: Date
+  /** Listenpreis in Rappen; mit Aktion/Gutschein wird aufgeschluesselt. */
+  regularPrice?: number
+  promotion?: { name: string; percent: number; amount: number } | null
+  /** Im Stripe-Checkout eingeloester Gutscheincode, in Rappen. */
+  voucherDiscount?: number
 }
 
 export async function generateInvoicePdf(
@@ -54,7 +60,32 @@ export async function generateInvoicePdf(
   draw(`EventShot – ${data.plan}`, 50, 560)
   draw(`Event: ${data.eventName}`, 50, 545)
 
-  draw(`CHF ${data.amountCHF.toFixed(2)}`, 450, 545, 11, true)
+  // pdf-lib kann mit StandardFonts kein U+2212; deshalb ASCII-Minus.
+  const minus = (rappen: number) => `- ${formatChf(rappen).replace('− ', '')}`
+  const hasBreakdown =
+    data.regularPrice !== undefined &&
+    (Boolean(data.promotion) || (data.voucherDiscount ?? 0) > 0)
+
+  if (hasBreakdown && data.regularPrice !== undefined) {
+    let y = 525
+    draw('Regulärer Preis', 50, y)
+    draw(formatChf(data.regularPrice), 450, y)
+    if (data.promotion) {
+      y -= 15
+      draw(`${data.promotion.name} -${data.promotion.percent}%`, 50, y)
+      draw(minus(data.promotion.amount), 450, y)
+    }
+    if ((data.voucherDiscount ?? 0) > 0) {
+      y -= 15
+      draw('Gutschein', 50, y)
+      draw(minus(data.voucherDiscount ?? 0), 450, y)
+    }
+    y -= 22
+    draw('Total', 50, y, 11, true)
+    draw(`CHF ${data.amountCHF.toFixed(2)}`, 450, y, 11, true)
+  } else {
+    draw(`CHF ${data.amountCHF.toFixed(2)}`, 450, 545, 11, true)
+  }
 
   // FOOTER
   draw('Zahlungsstatus: Bezahlt', 50, 150)

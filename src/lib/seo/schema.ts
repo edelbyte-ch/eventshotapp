@@ -6,6 +6,8 @@
  * verwendet – keine erfundenen Bewertungen, Referenzen oder Adressen.
  */
 
+import { PLAN_PRICES } from '@/lib/pricing'
+
 export const SITE = {
   url: 'https://eventshot.ch',
   name: 'EventShot',
@@ -83,10 +85,12 @@ export function softwareApplicationNode(): JsonObject {
     screenshot: SITE.ogImage,
     publisher: { '@id': ORG_ID },
     inLanguage: SITE.locale,
+    // Listenpreise aus der Preisquelle; Aktionen gehoeren nicht ins
+    // strukturierte Datum, das Suchmaschinen wochenlang zwischenspeichern.
     offers: [
-      { name: 'Basic', price: '49' },
-      { name: 'Premium', price: '99' },
-      { name: 'Enterprise', price: '149' },
+      { name: 'Basic', price: String(PLAN_PRICES.BASIC / 100) },
+      { name: 'Premium', price: String(PLAN_PRICES.PREMIUM / 100) },
+      { name: 'Enterprise', price: String(PLAN_PRICES.ENTERPRISE / 100) },
     ].map((offer) => ({
       '@type': 'Offer',
       name: offer.name,
@@ -120,7 +124,7 @@ export function serviceNode(): JsonObject {
     url: SITE.url,
     telephone: '+41445002504',
     email: 'info@edelbyte.ch',
-    priceRange: 'CHF 49 - 149',
+    priceRange: `CHF ${PLAN_PRICES.BASIC / 100} - ${PLAN_PRICES.ENTERPRISE / 100}`,
     currenciesAccepted: 'CHF',
     address: {
       '@type': 'PostalAddress',

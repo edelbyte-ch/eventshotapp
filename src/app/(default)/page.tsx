@@ -12,6 +12,7 @@ import { Features } from '@/components/landing/features'
 import { Hero } from '@/components/landing/hero'
 import { HowItWorks } from '@/components/landing/how-it-works'
 import { Pricing } from '@/components/landing/pricing'
+import { PromoSection } from '@/components/promotion/promo-section'
 import { Video } from '@/components/landing/video'
 
 export const metadata: Metadata = buildMetadata({
@@ -36,6 +37,7 @@ export default async function HomePage() {
       />
 
       <Hero />
+      <PromoSection />
       <Features />
       <HowItWorks />
       <Video />

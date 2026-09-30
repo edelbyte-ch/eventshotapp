@@ -199,12 +199,33 @@ export async function notifyAdminPayment(input: {
   customerName?: string | null
   invoiceNumber?: string | null
   stripeSessionId?: string | null
+  /** Listenpreis in Rappen. */
+  regularPrice?: number | null
+  /** Lesbare Aktion, z. B. "Winteraktion −20 % (− CHF 19.80)". */
+  promotion?: string | null
+  /** Gutscheincode-Rabatt aus dem Stripe-Checkout, in Rappen. */
+  voucherDiscount?: number | null
+  /** Auffaelligkeit, die der Betreiber pruefen soll. */
+  warning?: string | null
 }) {
   await notify(
-    `Zahlung eingegangen: ${chf(input.amountCHF)} (${input.plan})`,
+    `${input.warning ? '⚠️ ' : ''}Zahlung eingegangen: ${chf(input.amountCHF)} (${input.plan})`,
     'Zahlung auf EventShot eingegangen',
     [
+      { label: 'Achtung', value: input.warning },
       { label: 'Betrag', value: chf(input.amountCHF) },
+      {
+        label: 'Listenpreis',
+        value:
+          input.regularPrice != null ? chf(input.regularPrice / 100) : null,
+      },
+      { label: 'Aktion', value: input.promotion },
+      {
+        label: 'Gutschein',
+        value: input.voucherDiscount
+          ? `− ${chf(input.voucherDiscount / 100)}`
+          : null,
+      },
       { label: 'Plan', value: input.plan },
       { label: 'Event', value: input.eventName },
       { label: 'Kunde', value: input.customerName },

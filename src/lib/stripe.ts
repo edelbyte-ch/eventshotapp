@@ -17,8 +17,5 @@ export function getStripe() {
   return stripe
 }
 
-export const PLAN_PRICES = {
-  BASIC: 4900,
-  PREMIUM: 9900,
-  ENTERPRISE: 14900,
-} as const
+// Die Preise selbst stehen in lib/pricing.ts (auch im Browser nutzbar).
+export { PLAN_PRICES } from '@/lib/pricing'
