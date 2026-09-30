@@ -82,8 +82,8 @@ export function Hero() {
 
           <FadeIn className="relative h-[400px] md:h-[500px] lg:h-[600px] rounded-2xl overflow-hidden shadow-2xl">
             <Image
-              src="/eventshot-how-to.png"
-              alt="EventShot in Aktion: Gäste laden per QR-Code Fotos hoch, die live als Slideshow auf dem Screen erscheinen"
+              src="/eventshot-hero-hochzeit.jpg"
+              alt="EventShot an einer Hochzeit: Das Foto des Brautpaars läuft mit QR-Code als Live-Slideshow auf der Leinwand, die Gäste schauen zu"
               fill
               sizes="(max-width: 1024px) 100vw, 50vw"
               className="object-cover"
