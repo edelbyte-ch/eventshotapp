@@ -4,6 +4,7 @@ import {
   ArticlePage,
 } from '@/components/landing/article-page'
 import { buildMetadata } from '@/lib/seo/metadata'
+import { photoLimitPhrase } from '@/lib/photo-limits'
 
 export const metadata: Metadata = buildMetadata({
   path: '/ratgeber/hochzeitsbudget-fotos',
@@ -107,7 +108,7 @@ const content: ArticleContent = {
     { type: 'heading', text: 'Wo die digitale Fotowand steht' },
     {
       type: 'paragraph',
-      text: 'EventShot ist ein Einmalpreis pro Event: CHF 49.- für Basic, CHF 99.- für Premium und CHF 149.- für Enterprise. Darin enthalten sind unbegrenzte Foto-Uploads, die Live-Slideshow auf Beamer oder TV und der Zugriff auf die digitale Galerie – 7 Tage bei Basic, 30 bei Premium, 90 bei Enterprise. Für eine Hochzeit reicht Premium meist aus, weil 30 Tage genügen, damit alle ihre Bilder herunterladen können.',
+      text: `EventShot ist ein Einmalpreis pro Event: CHF 49.- für Basic, CHF 99.- für Premium und CHF 149.- für Enterprise. Darin enthalten sind die Live-Slideshow auf Beamer oder TV und der Zugriff auf die digitale Galerie – 7 Tage bei Basic, 30 bei Premium, 90 bei Enterprise. Basic nimmt ${photoLimitPhrase('BASIC')} an, Premium ${photoLimitPhrase('PREMIUM')} und Enterprise ${photoLimitPhrase('ENTERPRISE')}. Für eine Hochzeit reicht Premium meist aus, weil 30 Tage genügen, damit alle ihre Bilder herunterladen können.`,
     },
     {
       type: 'paragraph',

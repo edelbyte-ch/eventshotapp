@@ -5,6 +5,7 @@ import {
   type UseCaseContent,
   UseCasePage,
 } from '@/components/landing/use-case-page'
+import { photoLimitPhrase } from '@/lib/photo-limits'
 
 export const metadata: Metadata = buildMetadata({
   path: '/fotobox-ohne-app',
@@ -45,7 +46,7 @@ const content: UseCaseContent = {
   planName: 'Basic',
   planPrice: 'CHF 49.-',
   planReason:
-    'Für eine Feier im Familien- oder Freundeskreis genügt Basic: ein Slideshow-Screen, unbegrenzte Foto-Uploads und 7 Tage digitale Galerie – ohne dass ein einziger Gast etwas einrichten muss.',
+    `Für eine Feier im Familien- oder Freundeskreis genügt Basic: ein Slideshow-Screen, ${photoLimitPhrase('BASIC')} und 7 Tage digitale Galerie – ohne dass ein einziger Gast etwas einrichten muss.`,
   faq: [
     {
       question: 'Müssen meine Gäste wirklich nichts installieren?',

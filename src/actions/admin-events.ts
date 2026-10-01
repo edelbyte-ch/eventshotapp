@@ -4,6 +4,7 @@ import { revalidatePath } from 'next/cache'
 import { PLAN } from '@/generated/prisma/enums'
 import { notifyAdminEventCreated } from '@/lib/admin-notify'
 import { requireAdminAction } from '@/lib/auth-guard'
+import { PLAN_PHOTO_LIMITS } from '@/lib/photo-limits'
 import prisma from '@/lib/prisma'
 
 const PLAENE: PLAN[] = ['BASIC', 'PREMIUM', 'ENTERPRISE']
@@ -144,6 +145,9 @@ export async function createEventAsAdmin(data: {
     data: {
       name,
       plan: data.plan,
+      // Gratis heisst nicht unbegrenzt: Kulanz-Events bekommen dasselbe
+      // Paket wie gekaufte, inklusive Foto-Grenze.
+      uploadLimit: PLAN_PHOTO_LIMITS[data.plan],
       date,
       location: data.location?.trim() || null,
       description: data.description?.trim() || null,

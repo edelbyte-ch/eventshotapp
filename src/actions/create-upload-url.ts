@@ -3,6 +3,11 @@
 import { PutObjectCommand } from '@aws-sdk/client-s3'
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner'
 import { randomUUID } from 'crypto'
+import {
+  COUNTED_PHOTOS,
+  isPhotoLimitReached,
+  photoLimitReachedMessage,
+} from '@/lib/photo-limits'
 import prisma from '@/lib/prisma'
 import { s3 } from '@/lib/s3'
 
@@ -14,7 +19,7 @@ import { s3 } from '@/lib/s3'
  */
 export type CreateUploadUrlResult =
   | { ok: true; uploadUrl: string; objectKey: string }
-  | { ok: false; message: string }
+  | { ok: false; message: string; limitReached?: true }
 
 /**
  * Was ein Handy nach dem QR-Scan hochladen darf. HEIC und HEIF gehoeren
@@ -59,7 +64,7 @@ export async function createUploadUrl(
   }
   const event = await prisma.event.findUnique({
     where: { id: eventId },
-    select: { isActive: true, uploadLimit: true },
+    select: { isActive: true, isDemo: true, uploadLimit: true },
   })
 
   if (!event || !event.isActive) {
@@ -73,9 +78,10 @@ export async function createUploadUrl(
   // sein Foto vollstaendig hoch und erfaehrt erst danach, dass es nicht
   // angenommen wird — Datenvolumen und Wartezeit fuer nichts.
   //
-  // Bewusst ohne Transaktionssperre gegen gleichzeitige Uploads. Bei einem
-  // Demo-Kontingent ist ein Ausreisser von ein, zwei Bildern folgenlos; eine
-  // Sperre ueber den ganzen Upload-Vorgang waere der teurere Fehler.
+  // Das ist nur die fruehe Absage. Bei gleichzeitigen Uploads kommen hier
+  // mehrere durch, solange noch ein Platz frei ist; verbindlich zaehlt
+  // finalizeUpload unter Sperre und laesst nur so viele Fotos zu, wie Platz
+  // ist.
   if (event.uploadLimit !== null) {
     // `failed` zaehlt nicht mit: sonst verbraucht ein Bild, das die
     // Verarbeitung nicht ueberstanden hat, einen Platz, den niemand je zu
@@ -83,12 +89,13 @@ export async function createUploadUrl(
     // HEIC-Uploads haetten die Demo sonst beendet, bevor ein einziges Foto
     // erschienen ist.
     const used = await prisma.photo.count({
-      where: { eventId, status: { not: 'failed' } },
+      where: { eventId, ...COUNTED_PHOTOS },
     })
-    if (used >= event.uploadLimit) {
+    if (isPhotoLimitReached(used, event.uploadLimit)) {
       return {
         ok: false,
-        message: `Dieses Demo-Event ist auf ${event.uploadLimit} Fotos begrenzt und voll.`,
+        limitReached: true,
+        message: photoLimitReachedMessage(event.uploadLimit, event.isDemo),
       }
     }
   }

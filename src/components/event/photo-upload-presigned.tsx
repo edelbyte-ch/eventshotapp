@@ -2,6 +2,7 @@
 
 import {
   AlertCircle,
+  Ban,
   Camera,
   CheckCircle2,
   ImagePlus,
@@ -15,6 +16,7 @@ import { toast } from 'sonner'
 import { createUploadUrl } from '@/actions/create-upload-url'
 import { finalizeUpload } from '@/actions/finalize-upload'
 import { Button } from '@/components/ui/button'
+import { formatPhotoCount, isPhotoLimitReached } from '@/lib/photo-limits'
 
 /**
  * Wie viele Bilder gleichzeitig laufen.
@@ -61,9 +63,15 @@ export default function PhotoUploadPresigned({
   eventId,
   /** Im Veranstalter-Bereich fuehrt "fertig" zurueck zur Verwaltung. */
   galerieHref,
+  kontingent,
 }: {
   eventId: string
   galerieHref?: string
+  /**
+   * Stand beim Laden der Seite. Nur fuer die Anzeige: ob ein Foto
+   * angenommen wird, entscheidet allein der Server.
+   */
+  kontingent?: { used: number; limit: number | null; isDemo?: boolean }
 }) {
   const [eintraege, setEintraege] = useState<Eintrag[]>([])
   const [laeuft, setLaeuft] = useState(false)
@@ -92,7 +100,7 @@ export default function PhotoUploadPresigned({
         // Ist das Kontingent erschoepft, sind auch alle weiteren Bilder
         // vergeblich — der Aufrufer bricht den Stapel dann ab, statt
         // dieselbe Absage vierzigmal einzusammeln.
-        return { vollGeworden: /begrenzt und voll/.test(presigned.message) }
+        return { vollGeworden: presigned.limitReached === true }
       }
 
       const { uploadUrl, objectKey } = presigned
@@ -129,7 +137,7 @@ export default function PhotoUploadPresigned({
 
       if (!gespeichert.ok) {
         setzeEintrag(i, { status: 'fehler', meldung: gespeichert.message })
-        return { vollGeworden: /begrenzt und voll/.test(gespeichert.message) }
+        return { vollGeworden: gespeichert.limitReached === true }
       }
 
       setzeEintrag(i, { status: 'fertig', fortschritt: 100 })
@@ -203,6 +211,21 @@ export default function PhotoUploadPresigned({
 
       setLaeuft(false)
 
+      if (abgebrochen) {
+        // Was noch in der Schlange stand, kommt nicht mehr dran. Ohne
+        // Vermerk stuende es fuer immer auf "wartet".
+        setEintraege((prev) =>
+          prev.map((e) =>
+            e.status === 'wartet'
+              ? { ...e, status: 'fehler', meldung: 'Foto-Limit erreicht' }
+              : e,
+          ),
+        )
+        // Neu laden lassen, damit die Sperre unten greift, statt dass der
+        // naechste Stapel erst am Server abprallt.
+        router.refresh()
+      }
+
       // Zaehlen am Ende aus dem Zustand, nicht mitzaehlen waehrenddessen:
       // die Arbeiter laufen nebeneinander, ein gemeinsamer Zaehler waere die
       // eine Stelle, an der sie sich in die Quere kaemen.
@@ -244,8 +267,49 @@ export default function PhotoUploadPresigned({
       )
     : 0
 
+  const voll =
+    kontingent !== undefined &&
+    isPhotoLimitReached(kontingent.used, kontingent.limit)
+
+  // Steht anstelle des Ablegefelds. Die Zeilen eines eben abgebrochenen
+  // Stapels bleiben darunter sichtbar.
+  const sperrHinweis = voll && kontingent?.limit != null && (
+    <div className='rounded-2xl border-2 border-dashed border-muted p-8 text-center'>
+      <Ban className='mx-auto mb-3 h-12 w-12 text-muted-foreground' />
+      <p className='font-medium'>
+        Alle {formatPhotoCount(kontingent.limit)} Fotos sind hochgeladen
+      </p>
+      <p className='mt-1 text-sm text-muted-foreground'>
+        {!galerieHref ? (
+          'Dieses Event nimmt keine weiteren Fotos mehr an. In der Galerie siehst du alle Bilder.'
+        ) : kontingent.isDemo ? (
+          'Alle Demo-Fotos sind aufgebraucht. Für eine echte Feier legst du im Dashboard ein eigenes Event an.'
+        ) : (
+          <>
+            Dein Paket ist voll, neue Fotos werden nicht mehr angenommen. Die
+            vorhandenen bleiben erhalten. Für mehr Fotos schreib uns an{' '}
+            <a
+              href='mailto:info@edelbyte.ch'
+              className='text-primary underline underline-offset-4'
+            >
+              info@edelbyte.ch
+            </a>{' '}
+            – wir stellen dein Event auf ein grösseres Paket um.
+          </>
+        )}
+      </p>
+      {!galerieHref && (
+        <Button asChild variant='secondary' className='mt-5'>
+          <Link href={`/event/${eventId}/gallery`}>Zur Galerie</Link>
+        </Button>
+      )}
+    </div>
+  )
+
   return (
     <div className='w-full max-w-xl space-y-4'>
+      {sperrHinweis}
+
       {/* Ablegefeld. Auf dem Handy ist es einfach eine grosse Schaltflaeche —
           dort gibt es kein Ziehen und Fallenlassen. */}
       {/* biome-ignore lint/a11y/noStaticElementInteractions: die Schaltflaechen darunter sind der bedienbare Weg; das Feld nimmt nur zusaetzlich Dateien an */}
@@ -263,6 +327,8 @@ export default function PhotoUploadPresigned({
           }
         }}
         className={`rounded-2xl border-2 border-dashed p-8 text-center transition ${
+          voll ? 'hidden' : ''
+        } ${
           ueberZone
             ? 'border-primary bg-primary/5'
             : 'border-muted hover:border-primary/50'

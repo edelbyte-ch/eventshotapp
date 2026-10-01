@@ -4,6 +4,7 @@ import {
   UseCasePage,
 } from "@/components/landing/use-case-page";
 import { buildMetadata } from "@/lib/seo/metadata";
+import { photoLimitPhrase } from "@/lib/photo-limits";
 
 export const metadata: Metadata = buildMetadata({
   path: "/hochzeit/zug",
@@ -44,7 +45,7 @@ const content: UseCaseContent = {
   planName: "Premium",
   planPrice: "CHF 99.-",
   planReason:
-    "Für eine Hochzeit am Zugersee passt Premium: unbegrenzte Foto-Uploads vom Apéro bis spät in die Nacht, einstellbare Anzeigedauer der Slideshow und 30 Tage digitale Galerie – damit auch Gäste, die kurz nach dem Fest wieder zurückfliegen, in Ruhe an ihre Bilder kommen.",
+    `Für eine Hochzeit am Zugersee passt Premium: ${photoLimitPhrase("PREMIUM")} vom Apéro bis spät in die Nacht, einstellbare Anzeigedauer der Slideshow und 30 Tage digitale Galerie – damit auch Gäste, die kurz nach dem Fest wieder zurückfliegen, in Ruhe an ihre Bilder kommen.`,
   faq: [
     {
       question: "Müssen unsere Gäste für den Upload eine App installieren?",

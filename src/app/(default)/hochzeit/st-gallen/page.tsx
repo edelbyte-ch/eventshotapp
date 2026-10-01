@@ -4,6 +4,7 @@ import {
   UseCasePage,
 } from "@/components/landing/use-case-page";
 import { buildMetadata } from "@/lib/seo/metadata";
+import { photoLimitPhrase } from "@/lib/photo-limits";
 
 export const metadata: Metadata = buildMetadata({
   path: "/hochzeit/st-gallen",
@@ -44,7 +45,7 @@ const content: UseCaseContent = {
   planName: "Premium",
   planPrice: "CHF 99.-",
   planReason:
-    "Für eine Ostschweizer Hochzeit empfehlen wir Premium: unbegrenzte Foto-Uploads für einen Tag an zwei Orten, einstellbare Anzeigedauer der Slideshow und 30 Tage digitale Galerie – Zeit genug, bis auch die Bilder vom Bodensee vollständig beisammen sind.",
+    `Für eine Ostschweizer Hochzeit empfehlen wir Premium: ${photoLimitPhrase("PREMIUM")} für einen Tag an zwei Orten, einstellbare Anzeigedauer der Slideshow und 30 Tage digitale Galerie – Zeit genug, bis auch die Bilder vom Bodensee vollständig beisammen sind.`,
   faq: [
     {
       question:

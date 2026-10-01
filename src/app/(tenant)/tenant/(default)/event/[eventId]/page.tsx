@@ -1,10 +1,13 @@
 import { getEventPhotos } from '@/actions/get-event-photos'
 import InteractiveGallery from '@/components/tenant/event/interactive-gallery'
 import PhotoUploadPresigned from '@/components/event/photo-upload-presigned'
+import { PhotoQuota } from '@/components/tenant/event/photo-quota'
 import QRCodeGenerator from '@/components/tenant/event/qr-code-generator'
 import SlideshowSettings from '@/components/tenant/event/slideshow-settings'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { requireOwnedEventPage } from '@/lib/auth-guard'
+import { pricingPlans } from '@/lib/constants'
+import { COUNTED_PHOTOS } from '@/lib/photo-limits'
 import { Suspense } from 'react'
 
 export default async function Page({
@@ -35,16 +38,35 @@ const PageContent = async ({
     id: true,
     name: true,
     isActive: true,
+    plan: true,
+    isDemo: true,
+    uploadLimit: true,
+    _count: { select: { photos: { where: COUNTED_PHOTOS } } },
   })
+  const kontingent = {
+    used: event._count.photos,
+    limit: event.uploadLimit,
+    isDemo: event.isDemo,
+  }
 
   // Fetch photos with presigned URLs
   const photos = await getEventPhotos(eventId)
 
   return (
     <main className='container mx-auto py-8 px-4 md:px-6'>
-      <h1 className='text-2xl font-bold mb-6'>
-        Event: <span className='text-primary'>{event.name}</span>
-      </h1>
+      <div className='mb-6 space-y-3'>
+        <h1 className='text-2xl font-bold'>
+          Event: <span className='text-primary'>{event.name}</span>
+        </h1>
+        <PhotoQuota
+          used={kontingent.used}
+          limit={kontingent.limit}
+          planName={
+            pricingPlans.find((p) => p.plan === event.plan)?.name ?? event.plan
+          }
+          isDemo={event.isDemo}
+        />
+      </div>
 
       <Tabs defaultValue='photos' className='w-full'>
         <TabsList className='grid grid-cols-4 w-full'>
@@ -80,6 +102,7 @@ const PageContent = async ({
               <PhotoUploadPresigned
                 eventId={eventId}
                 galerieHref={`/tenant/event/${eventId}`}
+                kontingent={kontingent}
               />
             </div>
           </TabsContent>

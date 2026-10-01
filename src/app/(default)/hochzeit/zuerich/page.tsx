@@ -4,6 +4,7 @@ import {
   UseCasePage,
 } from '@/components/landing/use-case-page'
 import { buildMetadata } from '@/lib/seo/metadata'
+import { photoLimitPhrase } from '@/lib/photo-limits'
 
 export const metadata: Metadata = buildMetadata({
   path: '/hochzeit/zuerich',
@@ -44,7 +45,7 @@ const content: UseCaseContent = {
   planName: 'Premium',
   planPrice: 'CHF 99.-',
   planReason:
-    'Für eine Zürcher Hochzeit empfehlen wir Premium: unbegrenzte Foto-Uploads für einen langen Abend, einstellbare Anzeigedauer für die Slideshow und 30 Tage digitale Galerie – genug Zeit, bis auch die weit angereisten Gäste ihre Bilder in Ruhe geholt haben.',
+    `Für eine Zürcher Hochzeit empfehlen wir Premium: ${photoLimitPhrase('PREMIUM')} für einen langen Abend, einstellbare Anzeigedauer für die Slideshow und 30 Tage digitale Galerie – genug Zeit, bis auch die weit angereisten Gäste ihre Bilder in Ruhe geholt haben.`,
   faq: [
     {
       question: 'Müssen unsere Gäste zuerst eine App herunterladen?',

@@ -4,6 +4,7 @@ import {
   UseCasePage,
 } from '@/components/landing/use-case-page'
 import { buildMetadata } from '@/lib/seo/metadata'
+import { photoLimitPhrase } from '@/lib/photo-limits'
 
 export const metadata: Metadata = buildMetadata({
   path: '/hochzeit/bern',
@@ -44,7 +45,7 @@ const content: UseCaseContent = {
   planName: 'Premium',
   planPrice: 'CHF 99.-',
   planReason:
-    'Für eine Berner Hochzeit empfehlen wir Premium: einstellbare Anzeigedauer, damit jedes Bild lange genug an der Gewölbewand steht, unbegrenzte Foto-Uploads vom Apéro bis zur Schlussrunde und 30 Tage digitale Galerie – genug Zeit für alle, die erst am Sonntag ans Nachschauen denken.',
+    `Für eine Berner Hochzeit empfehlen wir Premium: einstellbare Anzeigedauer, damit jedes Bild lange genug an der Gewölbewand steht, ${photoLimitPhrase('PREMIUM')} vom Apéro bis zur Schlussrunde und 30 Tage digitale Galerie – genug Zeit für alle, die erst am Sonntag ans Nachschauen denken.`,
   faq: [
     {
       question: 'Braucht es für den Upload eine App auf dem Handy?',

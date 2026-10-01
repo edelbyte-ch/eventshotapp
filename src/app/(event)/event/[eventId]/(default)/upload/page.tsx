@@ -3,6 +3,8 @@ import Link from 'next/link'
 import { Suspense } from 'react'
 import PhotoUploadPresigned from '@/components/event/photo-upload-presigned'
 import { Button } from '@/components/ui/button'
+import { COUNTED_PHOTOS } from '@/lib/photo-limits'
+import prisma from '@/lib/prisma'
 
 export default async function Page({
   params,
@@ -33,9 +35,23 @@ const PageContent = async ({
   params: Promise<{ eventId: string }>
 }) => {
   const { eventId } = await params
+
+  // Nur damit ein volles Event gleich als voll erscheint, statt erst nach dem
+  // ersten vergeblichen Upload. Die Absage selbst kommt vom Server.
+  const event = await prisma.event.findUnique({
+    where: { id: eventId },
+    select: {
+      uploadLimit: true,
+      _count: { select: { photos: { where: COUNTED_PHOTOS } } },
+    },
+  })
+  const kontingent = event
+    ? { used: event._count.photos, limit: event.uploadLimit }
+    : undefined
+
   return (
     <>
-      <PhotoUploadPresigned eventId={eventId} />
+      <PhotoUploadPresigned eventId={eventId} kontingent={kontingent} />
       <Link href={`/event/${eventId}`}>
         <Button variant='ghost' size='sm' className='gap-1'>
           <ArrowLeft className='h-4 w-4' />

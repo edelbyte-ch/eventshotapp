@@ -5,6 +5,7 @@ import {
   UseCasePage,
 } from '@/components/landing/use-case-page'
 import { buildMetadata } from '@/lib/seo/metadata'
+import { photoLimitRange } from '@/lib/photo-limits'
 
 export const metadata: Metadata = buildMetadata({
   path: '/fotichaschte-alternative',
@@ -36,7 +37,7 @@ const content: UseCaseContent = {
   featuresTitle: 'Was du statt einer Mietbox bekommst',
   features: [
     'Foto-Upload per QR-Code, ganz ohne App',
-    'Unbegrenzte Foto-Uploads pro Event',
+    `Je nach Paket ${photoLimitRange()} pro Event`,
     'Live-Slideshow auf Leinwand oder Bildschirm',
     'Ohne Aufbau, Anfahrt und Rückgabe',
     'DSG-konform, Schweizer Hosting',

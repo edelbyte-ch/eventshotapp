@@ -34,7 +34,7 @@ export function DemoSection({ demo }: { demo: DemoEventInfo }) {
             {full ? (
               <>
                 Alle {limit} Demo-Fotos sind aufgebraucht. Für eine
-                echte Feier legst du ein Event ohne Grenze an.
+                echte Feier legst du ein eigenes Event an.
               </>
             ) : (
               <>

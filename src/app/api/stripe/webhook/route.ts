@@ -7,6 +7,7 @@ import { sendMail } from '@/lib/mailer'
 import { generateInvoicePdf } from '@/lib/invoice-pdf'
 import { saveInvoiceToMinio } from '@/lib/invoice-storage'
 import { getNextInvoiceNumber } from '@/lib/invoice-number'
+import { PLAN_PHOTO_LIMITS } from '@/lib/photo-limits'
 import { CURRENCY, formatChf, isPlanId } from '@/lib/pricing'
 import { getPromotionById, parseEventDate, quotePrice } from '@/lib/promotions'
 import { notifyAdminEventCreated, notifyAdminPayment } from '@/lib/admin-notify'
@@ -156,6 +157,8 @@ export async function POST(req: NextRequest) {
         // Mitternacht UTC; @db.Date speichert genau diesen Kalendertag.
         date: new Date(`${eventDate.iso}T00:00:00.000Z`),
         plan,
+        // Snapshot wie beim Preis: was beim Kauf galt, gilt fuer dieses Event.
+        uploadLimit: PLAN_PHOTO_LIMITS[plan],
         stripeSessionId: session.id,
         currency: session.currency ?? quote.currency,
         ...charged,

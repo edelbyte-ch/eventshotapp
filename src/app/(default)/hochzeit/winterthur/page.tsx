@@ -4,6 +4,7 @@ import {
   UseCasePage,
 } from '@/components/landing/use-case-page'
 import { buildMetadata } from '@/lib/seo/metadata'
+import { photoLimitPhrase } from '@/lib/photo-limits'
 
 export const metadata: Metadata = buildMetadata({
   path: '/hochzeit/winterthur',
@@ -44,7 +45,7 @@ const content: UseCaseContent = {
   planName: 'Premium',
   planPrice: 'CHF 99.-',
   planReason:
-    'Für eine Hochzeit in Winterthur empfehlen wir Premium: einstellbare Anzeigedauer für lange Abende in der Halle, unbegrenzte Foto-Uploads und 30 Tage digitale Galerie – Zeit genug, bis auch der letzte Gast seine Bilder gesichert hat.',
+    `Für eine Hochzeit in Winterthur empfehlen wir Premium: einstellbare Anzeigedauer für lange Abende in der Halle, ${photoLimitPhrase('PREMIUM')} und 30 Tage digitale Galerie – Zeit genug, bis auch der letzte Gast seine Bilder gesichert hat.`,
   faq: [
     {
       question: 'Müssen unsere Hochzeitsgäste in Winterthur eine App laden?',

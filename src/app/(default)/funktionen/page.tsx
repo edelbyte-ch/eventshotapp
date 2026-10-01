@@ -12,6 +12,7 @@ import { Button } from '@/components/ui/button'
 import { ScrollReveal } from '@/components/ui/motion'
 import { buildMetadata } from '@/lib/seo/metadata'
 import { breadcrumbNode, faqNode, graph } from '@/lib/seo/schema'
+import { photoLimitRange } from '@/lib/photo-limits'
 
 export const metadata: Metadata = buildMetadata({
   path: '/funktionen',
@@ -28,7 +29,7 @@ const BAUSTEINE = [
     points: [
       'Keine App-Installation und kein Gästekonto',
       'Läuft im Browser jedes gängigen Smartphones',
-      'Unbegrenzte Foto-Uploads in jedem Paket',
+      `Je nach Paket ${photoLimitRange()} pro Event`,
     ],
   },
   {

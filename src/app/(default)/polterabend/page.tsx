@@ -4,6 +4,7 @@ import {
   UseCasePage,
 } from '@/components/landing/use-case-page'
 import { buildMetadata } from '@/lib/seo/metadata'
+import { photoLimitPhrase, photoLimitRange } from '@/lib/photo-limits'
 
 export const metadata: Metadata = buildMetadata({
   path: '/polterabend',
@@ -36,7 +37,7 @@ const content: UseCaseContent = {
   features: [
     'Foto-Upload per QR-Code, ganz ohne App',
     'Live-Slideshow auf dem grossen Screen',
-    'Unbegrenzte Foto-Uploads für alle Gäste',
+    `Je nach Paket ${photoLimitRange()} pro Event`,
     'Event in weniger als 5 Minuten startklar',
     'DSG-konform, Schweizer Hosting',
     'Automatische Löschung nach Galerie-Ablauf',
@@ -44,7 +45,7 @@ const content: UseCaseContent = {
   planName: 'Basic',
   planPrice: 'CHF 49.-',
   planReason:
-    'Basic reicht für den Polterabend: unbegrenzt viele Uploads, ein Slideshow-Screen im Partyraum und 7 Tage digitale Galerie – genug, um die Bilder am Wochenende danach zu sichern.',
+    `Basic reicht für den Polterabend: ${photoLimitPhrase('BASIC')}, ein Slideshow-Screen im Partyraum und 7 Tage digitale Galerie – genug, um die Bilder am Wochenende danach zu sichern.`,
   faq: [
     {
       question: 'Müssen unsere Gäste etwas installieren?',

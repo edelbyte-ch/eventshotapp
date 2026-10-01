@@ -4,6 +4,7 @@ import {
   type UseCaseContent,
   UseCasePage,
 } from '@/components/landing/use-case-page'
+import { photoLimitPhrase } from '@/lib/photo-limits'
 
 export const metadata: Metadata = buildMetadata({
   path: '/geburtstag',
@@ -44,7 +45,7 @@ const content: UseCaseContent = {
   planName: 'Basic',
   planPrice: 'CHF 49.-',
   planReason:
-    'Für Geburtstage und kleinere Feiern reicht Basic: unbegrenzte Foto-Uploads, Live-Slideshow auf einem Screen und 7 Tage digitale Galerie.',
+    `Für Geburtstage und kleinere Feiern reicht Basic: ${photoLimitPhrase('BASIC')}, Live-Slideshow auf einem Screen und 7 Tage digitale Galerie.`,
   faq: [
     {
       question: 'Brauchen meine Gäste eine App?',

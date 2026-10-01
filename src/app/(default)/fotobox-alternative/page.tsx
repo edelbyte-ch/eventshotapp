@@ -5,6 +5,7 @@ import {
   type UseCaseContent,
   UseCasePage,
 } from '@/components/landing/use-case-page'
+import { photoLimitPhrase } from '@/lib/photo-limits'
 
 export const metadata: Metadata = buildMetadata({
   path: '/fotobox-alternative',
@@ -37,7 +38,7 @@ const content: UseCaseContent = {
   features: [
     'Foto-Upload per QR-Code, ganz ohne App',
     'Kein Aufbau, kein Platz für Kabine und Drucker',
-    'Unbegrenzte Uploads statt Warteschlange',
+    'Alle Gäste gleichzeitig statt Warteschlange',
     'Live-Slideshow auf Beamer oder TV',
     'DSG-konform, Schweizer Hosting',
     'Automatische Löschung nach Galerie-Ablauf',
@@ -45,7 +46,7 @@ const content: UseCaseContent = {
   planName: 'Premium',
   planPrice: 'CHF 99.-',
   planReason:
-    'Wer die Mietbox an der Hochzeit ersetzt, nimmt Premium: bis zu 3 Slideshow-Screens, unbegrenzte Foto-Uploads und 30 Tage digitale Galerie – Zeit genug, um nach dem Fest alles zu sichern.',
+    `Wer die Mietbox an der Hochzeit ersetzt, nimmt Premium: bis zu 3 Slideshow-Screens, ${photoLimitPhrase('PREMIUM')} und 30 Tage digitale Galerie – Zeit genug, um nach dem Fest alles zu sichern.`,
   faq: [
     {
       question: 'Müssen unsere Gäste dafür etwas herunterladen?',

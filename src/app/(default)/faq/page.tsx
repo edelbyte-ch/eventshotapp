@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button'
 import { ScrollReveal } from '@/components/ui/motion'
 import { buildMetadata } from '@/lib/seo/metadata'
 import { breadcrumbNode, faqNode, graph } from '@/lib/seo/schema'
+import { photoLimitPhrase } from '@/lib/photo-limits'
 
 export const metadata: Metadata = buildMetadata({
   path: '/faq',
@@ -46,7 +47,7 @@ const groups: FaqGroup[] = [
       {
         question: 'Wie viele Fotos darf eine einzelne Person beisteuern?',
         answer:
-          'So viele, wie sie möchte. Unbegrenzte Foto-Uploads sind in jedem Paket enthalten, eine Obergrenze pro Gast gibt es nicht.',
+          `So viele, wie sie möchte – eine Obergrenze pro Gast gibt es nicht. Begrenzt ist nur die Gesamtzahl pro Event: Basic nimmt ${photoLimitPhrase('BASIC')} an, Premium ${photoLimitPhrase('PREMIUM')} und Enterprise ${photoLimitPhrase('ENTERPRISE')}.`,
       },
       {
         question: 'Lassen sich auch Videos hochladen?',

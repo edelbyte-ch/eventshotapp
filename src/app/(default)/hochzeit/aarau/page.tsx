@@ -4,6 +4,7 @@ import {
   UseCasePage,
 } from '@/components/landing/use-case-page'
 import { buildMetadata } from '@/lib/seo/metadata'
+import { photoLimitPhrase, photoLimitRange } from '@/lib/photo-limits'
 
 export const metadata: Metadata = buildMetadata({
   path: '/hochzeit/aarau',
@@ -37,14 +38,14 @@ const content: UseCaseContent = {
     'Foto-Upload per QR-Code, ganz ohne App',
     'Live-Slideshow auf Leinwand oder Bildschirm',
     'Ruhige Übergänge und Animationen',
-    'Unbegrenzte Foto-Uploads für alle Gäste',
+    `Je nach Paket ${photoLimitRange()} pro Event`,
     'DSG-konform, Schweizer Hosting',
     'Automatische Löschung nach Galerie-Ablauf',
   ],
   planName: 'Premium',
   planPrice: 'CHF 99.-',
   planReason:
-    'Für eine Hochzeit im Aargau passt Premium: unbegrenzte Foto-Uploads über den ganzen Tag, einstellbare Anzeigedauer der Slideshow und 30 Tage digitale Galerie – auch Gäste, die erst später nachschauen, finden alle Bilder noch vor.',
+    `Für eine Hochzeit im Aargau passt Premium: ${photoLimitPhrase('PREMIUM')} über den ganzen Tag, einstellbare Anzeigedauer der Slideshow und 30 Tage digitale Galerie – auch Gäste, die erst später nachschauen, finden alle Bilder noch vor.`,
   faq: [
     {
       question: 'Braucht es für die Fotowand eine App auf dem Handy?',

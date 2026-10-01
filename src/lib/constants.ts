@@ -1,3 +1,8 @@
+import {
+  PLAN_PHOTO_LIMITS,
+  photoLimitLabel,
+  photoLimitPhrase,
+} from '@/lib/photo-limits'
 import { formatChf, PLAN_PRICES } from '@/lib/pricing'
 
 export const siteConfig = {
@@ -79,7 +84,7 @@ export const faqs = [
   {
     question: 'Wie viele Fotos können hochgeladen werden?',
     answer:
-      'Alle Pakete beinhalten unbegrenzte Foto-Uploads während deiner Veranstaltung. Der Galerie-Zugriff danach richtet sich nach dem Plan: 7 Tage (Basic), 30 Tage (Premium) oder 90 Tage (Enterprise).',
+      `Das hängt vom Paket ab: Basic nimmt ${photoLimitPhrase('BASIC')} pro Event an, Premium ${photoLimitPhrase('PREMIUM')} und Enterprise ${photoLimitPhrase('ENTERPRISE')}. Der Galerie-Zugriff danach richtet sich ebenfalls nach dem Plan: 7 Tage (Basic), 30 Tage (Premium) oder 90 Tage (Enterprise).`,
   },
   {
     question: 'Können Gäste die Fotos herunterladen?',
@@ -116,9 +121,10 @@ export const pricingPlans = [
 
     // 🔒 Technisches Limit
     maxSlideshows: 1,
+    photoLimit: PLAN_PHOTO_LIMITS.BASIC,
 
     features: [
-      'Unbegrenzte Foto-Uploads',
+      photoLimitLabel('BASIC'),
       'Live-Slideshow',
       'Max. 1 Slideshow-Screen',
       'Digitale Galerie für 7 Tage',
@@ -136,9 +142,10 @@ export const pricingPlans = [
 
     // 🔒 Technisches Limit
     maxSlideshows: 3,
+    photoLimit: PLAN_PHOTO_LIMITS.PREMIUM,
 
     features: [
-      'Unbegrenzte Foto-Uploads',
+      photoLimitLabel('PREMIUM'),
       'Live-Slideshow',
       'Max. 3 Slideshow-Screens',
       'Einstellbare Anzeigedauer',
@@ -159,9 +166,10 @@ export const pricingPlans = [
 
     // 🔒 Technisches Limit
     maxSlideshows: Infinity,
+    photoLimit: PLAN_PHOTO_LIMITS.ENTERPRISE,
 
     features: [
-      'Unbegrenzte Foto-Uploads',
+      photoLimitLabel('ENTERPRISE'),
       'Live-Slideshow',
       'Unbegrenzte Slideshow-Screens',
       'Erweiterte Slideshow-Einstellungen',

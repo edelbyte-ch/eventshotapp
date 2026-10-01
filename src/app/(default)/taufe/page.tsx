@@ -4,6 +4,7 @@ import {
   UseCasePage,
 } from '@/components/landing/use-case-page'
 import { buildMetadata } from '@/lib/seo/metadata'
+import { photoLimitPhrase } from '@/lib/photo-limits'
 
 export const metadata: Metadata = buildMetadata({
   path: '/taufe',
@@ -44,7 +45,7 @@ const content: UseCaseContent = {
   planName: 'Basic',
   planPrice: 'CHF 49.-',
   planReason:
-    'Für eine Taufe im kleinen Kreis genügt Basic: ein Slideshow-Screen im Restaurant, beliebig viele Uploads und 7 Tage Galerie-Zugriff – wer den Paten mehr Zeit lassen möchte, nimmt Premium mit 30 Tagen.',
+    `Für eine Taufe im kleinen Kreis genügt Basic: ein Slideshow-Screen im Restaurant, ${photoLimitPhrase('BASIC')} und 7 Tage Galerie-Zugriff – wer den Paten mehr Zeit lassen möchte, nimmt Premium mit 30 Tagen.`,
   faq: [
     {
       question: 'Kommen auch die Grosseltern ohne App zurecht?',

@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { ScrollReveal } from "@/components/ui/motion";
 import { buildMetadata } from "@/lib/seo/metadata";
 import { breadcrumbNode, faqNode, graph } from "@/lib/seo/schema";
+import { photoLimitPhrase, photoLimitRange } from "@/lib/photo-limits";
 
 export const metadata: Metadata = buildMetadata({
   path: "/qr-code-fotos-hochzeit",
@@ -60,7 +61,7 @@ const merkmale = [
   "Foto-Upload per QR-Code, ganz ohne App",
   "Kein Konto, kein Login, kein Passwort",
   "Jedes Bild erscheint sofort in der Live-Slideshow",
-  "Unbegrenzte Foto-Uploads während der ganzen Feier",
+  `Je nach Paket ${photoLimitRange()} pro Feier`,
   "DSG-konform, Schweizer Hosting, automatische Löschung nach Galerie-Ablauf",
 ];
 
@@ -221,7 +222,7 @@ export default function QrCodeFotosHochzeitPage() {
             </p>
             <h2 className="text-2xl font-bold">Premium · CHF 99.-</h2>
             <p className="max-w-lg text-sm text-muted-foreground">
-              Zur Hochzeit passt Premium: unbegrenzte Foto-Uploads, einstellbare
+              Zur Hochzeit passt Premium: {photoLimitPhrase("PREMIUM")}, einstellbare
               Anzeigedauer in der Slideshow und 30 Tage digitale Galerie – lange
               genug, damit auch eure Gäste ihre Lieblingsbilder noch finden.
             </p>

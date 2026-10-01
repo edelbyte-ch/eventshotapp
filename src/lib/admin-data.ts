@@ -2,6 +2,7 @@ import 'server-only'
 
 import type { Prisma } from '@/generated/prisma/client'
 import { getCurrentTenant, isCurrentUserAdmin } from '@/lib/auth-guard'
+import { COUNTED_PHOTOS } from '@/lib/photo-limits'
 import prisma from '@/lib/prisma'
 import { PLAN_PRICES } from '@/lib/stripe'
 
@@ -15,9 +16,12 @@ const EVENT_SELECT = {
   plan: true,
   isActive: true,
   isDemo: true,
+  uploadLimit: true,
   stripeSessionId: true,
   tenant: { select: { id: true, name: true, company: true, email: true } },
-  _count: { select: { photos: true } },
+  // Gezaehlt wie bei der Upload-Grenze, sonst steht neben "von 250" eine
+  // andere Zahl als die, an der der Upload tatsaechlich stoppt.
+  _count: { select: { photos: { where: COUNTED_PHOTOS } } },
 } as const
 
 export type EventForList = Prisma.EventGetPayload<{ select: typeof EVENT_SELECT }>

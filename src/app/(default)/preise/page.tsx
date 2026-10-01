@@ -5,6 +5,7 @@ import { PlanPrice } from '@/components/promotion/plan-price'
 import { Button } from '@/components/ui/button'
 import { ScrollReveal } from '@/components/ui/motion'
 import { pricingPlans } from '@/lib/constants'
+import { formatPhotoCount, photoLimitPhrase } from '@/lib/photo-limits'
 import { promotionMonthsLabel } from '@/lib/promotions'
 import { getDisplayPromotion } from '@/lib/promotions.server'
 import { buildMetadata } from '@/lib/seo/metadata'
@@ -25,7 +26,14 @@ const COMPARISON: { label: string; values: [string, string, string] }[] = [
     label: 'Preis pro Event',
     values: pricingPlans.map((p) => p.price) as [string, string, string],
   },
-  { label: 'Foto-Uploads', values: ['unbegrenzt', 'unbegrenzt', 'unbegrenzt'] },
+  {
+    label: 'Fotos pro Event',
+    values: pricingPlans.map((p) =>
+      p.photoLimit === null
+        ? 'unbegrenzt'
+        : `bis ${formatPhotoCount(p.photoLimit)}`,
+    ) as [string, string, string],
+  },
   { label: 'Slideshow-Screens', values: ['1', '3', 'unbegrenzt'] },
   { label: 'Digitale Galerie', values: ['7 Tage', '30 Tage', '90 Tage'] },
   {
@@ -52,7 +60,7 @@ const COMPARISON: { label: string; values: [string, string, string] }[] = [
 
 const IMMER_ENTHALTEN = [
   'Foto-Upload per QR-Code, ganz ohne App',
-  'Unbegrenzte Foto-Uploads während des Fests',
+  'Beliebig viele Gäste ohne Aufpreis',
   'Live-Slideshow auf Beamer oder TV',
   'Digitale Galerie über denselben QR-Code',
   'DSG-konform, Schweizer Hosting',
@@ -81,14 +89,13 @@ const FAQ = [
       'Ja. Du legst den Anlass zuerst an und richtest ihn ein; das Paket bestimmst du, wenn du buchst.',
   },
   {
-    question: 'Sind alle Foto-Uploads im Preis enthalten?',
-    answer:
-      'Ja. In allen drei Paketen laden deine Gäste unbegrenzt viele Fotos hoch. Unterschiedlich sind nur die Slideshow-Screens, die Dauer der digitalen Galerie und die Slideshow-Einstellungen.',
+    question: 'Wie viele Fotos sind im Preis enthalten?',
+    answer: `Basic nimmt ${photoLimitPhrase('BASIC')} pro Event an, Premium ${photoLimitPhrase('PREMIUM')} und Enterprise ${photoLimitPhrase('ENTERPRISE')}. Ist die Grenze erreicht, bleiben alle Fotos erhalten – nur neue Uploads werden nicht mehr angenommen. Daneben unterscheiden sich die Pakete bei den Slideshow-Screens, der Dauer der digitalen Galerie und den Slideshow-Einstellungen.`,
   },
   {
     question: 'Zahle ich mehr, wenn mehr Gäste kommen?',
     answer:
-      'Nein. Der Paketpreis hängt nicht an der Gästezahl, sondern an den Slideshow-Screens, der Galerie-Dauer und den Slideshow-Einstellungen.',
+      'Nein. Der Paketpreis hängt nicht an der Gästezahl, sondern an der Anzahl Fotos, den Slideshow-Screens, der Galerie-Dauer und den Slideshow-Einstellungen.',
   },
   {
     question: 'Gilt der Preis auch für ein zweites Fest?',

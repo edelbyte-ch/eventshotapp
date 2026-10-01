@@ -5,6 +5,7 @@ import {
   type UseCaseContent,
   UseCasePage,
 } from '@/components/landing/use-case-page'
+import { photoLimitPhrase, photoLimitRange } from '@/lib/photo-limits'
 
 export const metadata: Metadata = buildMetadata({
   path: '/fotobox-kosten-schweiz',
@@ -36,7 +37,7 @@ const content: UseCaseContent = {
   featuresTitle: 'Was im Einmalpreis enthalten ist',
   features: [
     'Foto-Upload per QR-Code, ganz ohne App',
-    'Unbegrenzte Foto-Uploads in jedem Paket',
+    `Je nach Paket ${photoLimitRange()} pro Event`,
     'Live-Slideshow auf Beamer oder TV',
     'Einmalpreis pro Event, kein Abo',
     'DSG-konform, Schweizer Hosting',
@@ -45,7 +46,7 @@ const content: UseCaseContent = {
   planName: 'Basic',
   planPrice: 'CHF 49.-',
   planReason:
-    'Wer vor allem auf den Preis schaut, startet mit Basic: 7 Tage Zugriff auf die digitale Galerie, unbegrenzte Foto-Uploads und ein Screen für die Slideshow – einmalig, ohne Anfahrts- und ohne Betreuungspauschale.',
+    `Wer vor allem auf den Preis schaut, startet mit Basic: 7 Tage Zugriff auf die digitale Galerie, ${photoLimitPhrase('BASIC')} und ein Screen für die Slideshow – einmalig, ohne Anfahrts- und ohne Betreuungspauschale.`,
   faq: [
     {
       question: 'Kommen für meine Gäste noch Kosten dazu?',

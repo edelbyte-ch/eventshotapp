@@ -22,6 +22,7 @@ import { AdminNewEventDialog } from '@/components/tenant/admin-new-event-dialog'
 import { getVisibleEvents } from '@/lib/admin-data'
 import { isCurrentUserAdmin } from '@/lib/auth-guard'
 import { getOrCreateDemoEvent } from '@/lib/demo-event'
+import { formatPhotoCount, isPhotoLimitReached } from '@/lib/photo-limits'
 import prisma from '@/lib/prisma'
 import type { EventForList } from '@/lib/admin-data'
 import type { EventWithCount } from '@/types/EventWithCount'
@@ -277,11 +278,25 @@ export function EventRow({
                 {event.location}
               </span>
             )}
-            {event._count.photos > 0 && (
-              <span className='flex items-center gap-1'>
+            {typeof voll.uploadLimit === 'number' ? (
+              <span
+                className={`flex items-center gap-1 tabular-nums ${
+                  isPhotoLimitReached(event._count.photos, voll.uploadLimit)
+                    ? 'text-destructive'
+                    : ''
+                }`}
+              >
                 <Camera className='h-4 w-4' />
-                {event._count.photos} Fotos
+                {formatPhotoCount(event._count.photos)} /{' '}
+                {formatPhotoCount(voll.uploadLimit)} Fotos
               </span>
+            ) : (
+              event._count.photos > 0 && (
+                <span className='flex items-center gap-1'>
+                  <Camera className='h-4 w-4' />
+                  {event._count.photos} Fotos
+                </span>
+              )
             )}
           </div>
 

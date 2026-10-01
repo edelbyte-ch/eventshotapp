@@ -4,6 +4,7 @@ import {
   UseCasePage,
 } from '@/components/landing/use-case-page'
 import { buildMetadata } from '@/lib/seo/metadata'
+import { photoLimitPhrase } from '@/lib/photo-limits'
 
 export const metadata: Metadata = buildMetadata({
   path: '/digitale-fotobox',
@@ -44,7 +45,7 @@ const content: UseCaseContent = {
   planName: 'Basic',
   planPrice: 'CHF 49.-',
   planReason:
-    'Für den Einstieg passt Basic: unbegrenzte Foto-Uploads, Live-Slideshow auf einem Screen und 7 Tage digitale Galerie – als Einmalpreis pro Event, kein Abo.',
+    `Für den Einstieg passt Basic: ${photoLimitPhrase('BASIC')}, Live-Slideshow auf einem Screen und 7 Tage digitale Galerie – als Einmalpreis pro Event, kein Abo.`,
   faq: [
     {
       question: 'Müssen unsere Gäste für die digitale Fotobox etwas installieren?',

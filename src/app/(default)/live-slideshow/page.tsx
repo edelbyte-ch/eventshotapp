@@ -12,6 +12,7 @@ import { Button } from "@/components/ui/button";
 import { ScrollReveal } from "@/components/ui/motion";
 import { buildMetadata } from "@/lib/seo/metadata";
 import { breadcrumbNode, faqNode, graph } from "@/lib/seo/schema";
+import { photoLimitLabel, photoLimitRange } from "@/lib/photo-limits";
 
 export const metadata: Metadata = buildMetadata({
   path: "/live-slideshow",
@@ -52,7 +53,7 @@ const plaene = [
     name: "Basic",
     price: formatChf(PLAN_PRICES.BASIC, "list"),
     lines: [
-      "Live-Slideshow mit unbegrenzten Foto-Uploads",
+      photoLimitLabel("BASIC"),
       "Digitale Galerie für 7 Tage",
       "Inkl. dezentem EventShot-Wasserzeichen",
     ],
@@ -62,6 +63,7 @@ const plaene = [
     price: formatChf(PLAN_PRICES.PREMIUM, "list"),
     highlighted: true,
     lines: [
+      photoLimitLabel("PREMIUM"),
       "Einstellbare Anzeigedauer je Bild",
       "Slideshow-Steuerung ein-/ausblendbar",
       "Digitale Galerie für 30 Tage",
@@ -71,6 +73,7 @@ const plaene = [
     name: "Enterprise",
     price: formatChf(PLAN_PRICES.ENTERPRISE, "list"),
     lines: [
+      photoLimitLabel("ENTERPRISE"),
       "Erweiterte Slideshow-Einstellungen",
       "Eigenes Branding in der Slideshow",
       "Wasserzeichen optional deaktivierbar",
@@ -211,8 +214,8 @@ export default function LiveSlideshowPage() {
             Was jeder Plan an der Slideshow erlaubt
           </h2>
           <p className="max-w-2xl text-muted-foreground">
-            Alle drei Pakete zeigen die Live-Slideshow und nehmen unbegrenzt
-            viele Foto-Uploads entgegen. Unterschiedlich sind die
+            Alle drei Pakete zeigen die Live-Slideshow. Unterschiedlich sind
+            die Zahl der Fotos ({photoLimitRange()}), die
             Einstellmöglichkeiten und die Frist, in der die digitale Galerie
             danach offen bleibt.
           </p>
