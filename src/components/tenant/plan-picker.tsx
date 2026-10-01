@@ -1,16 +1,10 @@
 // components/subdomain/plan-picker.tsx
 'use client'
 
-import { Badge } from '@/components/ui/badge'
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from '@/components/ui/popover'
 import { pricingPlans } from '@/lib/constants'
 import { formatChf, type PlanId } from '@/lib/pricing'
 import { type EventDate, type Promotion, quotePrice } from '@/lib/promotions'
-import { CheckIcon, Info } from 'lucide-react'
+import { Check, CheckCircle2 } from 'lucide-react'
 
 function cn(...c: Array<string | false | null | undefined>) {
   return c.filter(Boolean).join(' ')
@@ -22,6 +16,11 @@ function cn(...c: Array<string | false | null | undefined>) {
  *
  * Mit Eventdatum zeigt jede Karte den Preis, der fuer genau dieses Datum
  * gilt – dieselbe Rechnung, die der Server beim Checkout wiederholt.
+ *
+ * Die Leistungen stehen direkt auf der Karte, wie in social-wall. Vorher
+ * lagen sie hinter einem (i): man sah drei Preise, aber nicht, wofuer man
+ * mehr bezahlt — genau der Unterschied, der Premium und Enterprise
+ * begruendet (Foto-Limit, Screens, Galerie-Dauer).
  */
 export function PlanPicker({
   value,
@@ -39,7 +38,11 @@ export function PlanPicker({
       {/* Server Action erhält plan=BASIC|PREMIUM|ENTERPRISE */}
       <input type='hidden' name='plan' value={value} />
 
-      <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3'>
+      <div
+        role='radiogroup'
+        aria-label='Paket'
+        className='grid grid-cols-1 gap-3 pt-3 md:grid-cols-3'
+      >
         {pricingPlans.map((p) => {
           const active = p.plan === value
           const quote = eventDate
@@ -47,105 +50,88 @@ export function PlanPicker({
             : null
           const discounted = quote !== null && quote.discountAmount > 0
           return (
-            <div
+            <button
               key={p.name}
+              type='button'
               role='radio'
               aria-checked={active}
-              tabIndex={0}
               onClick={() => onChange(p.plan)}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter' || e.key === ' ') {
-                  e.preventDefault()
-                  onChange(p.plan)
-                }
-              }}
               className={cn(
-                'relative rounded-lg border p-3 text-left transition-all cursor-pointer',
+                'relative flex flex-col rounded-2xl border p-4 text-left transition-all',
                 'focus:outline-none focus-visible:ring-2 focus-visible:ring-ring',
                 active
-                  ? 'border-primary ring-1 ring-primary/30 shadow-sm bg-primary/5'
-                  : 'border-border hover:border-primary/40',
+                  ? 'border-primary bg-primary/5 shadow-[0_0_0_1px_var(--primary)]'
+                  : 'border-border opacity-80 hover:border-primary/40 hover:opacity-100',
               )}
             >
-              <div className='space-y-1'>
-                <div className='flex items-center gap-2 min-w-0'>
-                  <span
-                    className={cn(
-                      'inline-block size-2 rounded-full shrink-0',
-                      active ? 'bg-primary' : 'bg-muted-foreground/40',
-                    )}
-                    aria-hidden
-                  />
-                  <div className='flex items-center gap-2 min-w-0 flex-1'>
-                    <span className='font-medium text-sm truncate'>
-                      {p.name}
-                    </span>
-                    {p.highlighted && (
-                      <Badge
-                        variant='secondary'
-                        className='rounded-full text-[10px] px-1 py-0.5 shrink-0'
-                      >
-                        Meistgewählt
-                      </Badge>
-                    )}
-                  </div>
-                  <Popover>
-                    <PopoverTrigger asChild>
-                      <button
-                        type='button'
-                        aria-label={`${p.name}: Leistungen anzeigen`}
-                        className='p-2 hover:bg-muted rounded-full transition-colors touch-manipulation shrink-0'
-                        onClick={(e) => e.stopPropagation()}
-                      >
-                        <Info className='h-4 w-4 sm:h-3 sm:w-3 text-muted-foreground' />
-                      </button>
-                    </PopoverTrigger>
-                    <PopoverContent
-                      className='w-80 sm:w-80 p-4'
-                      side='top'
-                      sideOffset={8}
-                    >
-                      <div className='space-y-3'>
-                        <div className='flex items-center gap-2'>
-                          <h4 className='font-semibold text-sm'>
-                            {p.name} Features
-                          </h4>
-                        </div>
-                        <ul className='space-y-2'>
-                          {p.features.map((feature) => (
-                            <li key={feature} className='flex gap-2 text-sm'>
-                              <CheckIcon className='h-4 w-4 text-primary shrink-0 mt-0.5' />
-                              <span>{feature}</span>
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-                    </PopoverContent>
-                  </Popover>
-                </div>
-                <div className='text-xs text-muted-foreground'>
-                  {p.description}
-                </div>
-                <div className='flex flex-wrap items-baseline gap-x-1.5 text-sm font-semibold'>
-                  {discounted ? (
-                    <>
-                      <span className='text-primary'>
-                        {formatChf(quote.finalPrice, 'list')}
-                      </span>
-                      <s className='text-xs font-normal text-muted-foreground'>
-                        <span className='sr-only'>regulär </span>
-                        {p.price}
-                      </s>
-                    </>
-                  ) : (
-                    <span>{p.price}</span>
-                  )}
-                  <span className='text-xs font-normal text-muted-foreground'>
-                    {p.duration}
-                  </span>
-                </div>
+              {p.highlighted && (
+                <span className='absolute -top-2.5 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full bg-primary px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-[0.15em] text-primary-foreground'>
+                  Meistgewählt
+                </span>
+              )}
+
+              {/* Gefuellt = gewaehlt, leerer Ring = waehlbar */}
+              <span
+                aria-hidden
+                className={cn(
+                  'absolute right-4 top-4 flex size-5 items-center justify-center rounded-full border-2 transition-colors',
+                  active
+                    ? 'border-primary bg-primary text-primary-foreground'
+                    : 'border-muted-foreground/40',
+                )}
+              >
+                {active && <Check className='size-3' strokeWidth={3} />}
+              </span>
+
+              <span
+                className={cn(
+                  'pr-8 text-xs font-bold uppercase tracking-[0.15em]',
+                  active ? 'text-primary' : 'text-muted-foreground',
+                )}
+              >
+                {p.name}
+              </span>
+
+              <div className='mt-2 flex flex-wrap items-baseline gap-x-2 gap-y-1'>
+                <span className='text-2xl font-black leading-none'>
+                  {discounted ? formatChf(quote.finalPrice, 'list') : p.price}
+                </span>
+                {discounted && (
+                  <s className='text-xs text-muted-foreground'>
+                    <span className='sr-only'>regulär </span>
+                    {p.price}
+                  </s>
+                )}
               </div>
-            </div>
+              <div className='mt-0.5 text-[10px] text-muted-foreground'>
+                {p.duration}
+              </div>
+
+              <p className='mt-3 text-xs leading-relaxed text-muted-foreground'>
+                {p.description}
+              </p>
+
+              <ul className='mt-4 flex-1 space-y-1.5'>
+                {p.features.map((feature) => (
+                  <li
+                    key={feature}
+                    className={cn(
+                      'flex gap-2 text-xs',
+                      active ? 'text-foreground' : 'text-muted-foreground',
+                    )}
+                  >
+                    <CheckCircle2
+                      className={cn(
+                        'mt-px size-3.5 shrink-0',
+                        active ? 'text-primary' : 'text-muted-foreground/60',
+                      )}
+                      strokeWidth={2}
+                    />
+                    {feature}
+                  </li>
+                ))}
+              </ul>
+            </button>
           )
         })}
       </div>

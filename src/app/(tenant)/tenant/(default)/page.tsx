@@ -18,6 +18,7 @@ import { NewEventDialog } from '@/components/tenant/new-event-dialog'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { getKundenForAdmin } from '@/actions/admin-events'
+import { AdminDeleteEventButton } from '@/components/tenant/admin-delete-event-button'
 import { AdminNewEventDialog } from '@/components/tenant/admin-new-event-dialog'
 import { getVisibleEvents } from '@/lib/admin-data'
 import { isCurrentUserAdmin } from '@/lib/auth-guard'
@@ -90,16 +91,11 @@ async function DashboardContent() {
   const kunden = isAdmin ? await getKundenForAdmin() : []
   const stats = getDashboardStats(events)
 
-  const sortedEvents = [...events].sort((a, b) => {
-    if (!a.date || !b.date) return 0
-    const now = new Date()
-
-    const aPast = a.date < now
-    const bPast = b.date < now
-
-    if (aPast !== bPast) return aPast ? 1 : -1
-    return a.date.getTime() - b.date.getTime()
-  })
+  // Neueste zuerst, wie unter /events: getVisibleEvents liefert schon nach
+  // Datum absteigend. Vorher standen hier die kommenden Events aufsteigend
+  // vor den vergangenen — beim Betreiber mit vielen Kunden landete das
+  // naechste Fest oben und das zuletzt gebuchte irgendwo in der Mitte.
+  const sortedEvents = events
 
   return (
     <>
@@ -165,7 +161,7 @@ async function DashboardContent() {
           <CardHeader>
             <CardTitle className='text-xl flex items-center gap-2'>
               <Layers3 className='h-5 w-5 text-primary' />
-              {isAdmin ? `Events (${sortedEvents.length})` : 'Bevorstehende Events'}
+              {isAdmin ? `Events (${sortedEvents.length})` : 'Deine Events'}
             </CardTitle>
           </CardHeader>
 
@@ -327,6 +323,14 @@ export function EventRow({
             </Link>
           </Button>
           <EditEventDialog event={event} />
+          {showOwner && (
+            <AdminDeleteEventButton
+              eventId={event.id}
+              name={event.name}
+              photos={event._count.photos}
+              paid={Boolean(voll.stripeSessionId)}
+            />
+          )}
         </div>
       </div>
     </div>

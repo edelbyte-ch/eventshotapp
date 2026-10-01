@@ -1,11 +1,16 @@
 'use server'
 
+import {
+  DeleteObjectsCommand,
+  ListObjectsV2Command,
+} from '@aws-sdk/client-s3'
 import { revalidatePath } from 'next/cache'
 import { PLAN } from '@/generated/prisma/enums'
 import { notifyAdminEventCreated } from '@/lib/admin-notify'
 import { requireAdminAction } from '@/lib/auth-guard'
 import { PLAN_PHOTO_LIMITS } from '@/lib/photo-limits'
 import prisma from '@/lib/prisma'
+import { s3 } from '@/lib/s3'
 
 const PLAENE: PLAN[] = ['BASIC', 'PREMIUM', 'ENTERPRISE']
 
@@ -166,6 +171,87 @@ export async function createEventAsAdmin(data: {
     tenantId: event.tenantId,
     source: 'Admin-Bereich',
   })
+
+  revalidatePath('/tenant')
+  revalidatePath('/tenant/events')
+  revalidatePath('/tenant/kunden')
+
+  return { ok: true, eventId: event.id }
+}
+
+/**
+ * Event endgueltig loeschen — nur der Betreiber. Gedacht fuer Testmuell und
+ * Altlasten; Kunden haben diesen Weg bewusst nicht.
+ *
+ * Erst der Speicher, dann die Datenbank. Umgekehrt bliebe bei einem
+ * Speicherfehler alles im Bucket liegen, worauf keine Zeile mehr zeigt —
+ * und nichts raeumt es je wieder ab. So bricht der Vorgang ab, das Event
+ * steht noch da, und ein zweiter Klick versucht es erneut.
+ *
+ * Geloescht wird alles unter events/<id>/ (Originale, Thumbnails,
+ * Lightbox-Fassungen, auch verwaiste) und das Galerie-ZIP. Rechnungen
+ * liegen unter invoices/ und bleiben: sie sind Buchhaltung, nicht Event.
+ * Ein geloeschtes Demo-Event legt getOrCreateDemoEvent beim naechsten
+ * Dashboard-Besuch des Kunden frisch an.
+ */
+export async function deleteEventAsAdmin(
+  eventId: string,
+): Promise<AdminEventResult> {
+  const guard = await requireAdminAction()
+  if (!guard.ok) return { ok: false, message: guard.message }
+
+  const event = await prisma.event.findUnique({
+    where: { id: eventId },
+    select: { id: true, zipKey: true },
+  })
+  if (!event) return { ok: false, message: 'Dieses Event gibt es nicht (mehr).' }
+
+  const bucket = process.env.S3_BUCKET as string
+  try {
+    const keys: string[] = []
+    let token: string | undefined
+    do {
+      const page = await s3.send(
+        new ListObjectsV2Command({
+          Bucket: bucket,
+          Prefix: `events/${event.id}/`,
+          ContinuationToken: token,
+        }),
+      )
+      for (const o of page.Contents ?? []) if (o.Key) keys.push(o.Key)
+      token = page.IsTruncated ? page.NextContinuationToken : undefined
+    } while (token)
+    keys.push(event.zipKey ?? `zips/event-${event.id}.zip`)
+
+    // DeleteObjects nimmt hoechstens 1000 Schluessel pro Aufruf.
+    for (let i = 0; i < keys.length; i += 1000) {
+      const res = await s3.send(
+        new DeleteObjectsCommand({
+          Bucket: bucket,
+          Delete: {
+            Objects: keys.slice(i, i + 1000).map((Key) => ({ Key })),
+            Quiet: true,
+          },
+        }),
+      )
+      if (res.Errors?.length) {
+        throw new Error(`${res.Errors.length} Objekte nicht geloescht`)
+      }
+    }
+  } catch (err) {
+    console.error('[delete-event] Speicher nicht geleert:', err)
+    return {
+      ok: false,
+      message: 'Die Fotos konnten nicht gelöscht werden. Bitte nochmals versuchen.',
+    }
+  }
+
+  // SlideshowSession haengt ohne Cascade am Event und muss zuerst weg;
+  // Fotos und Slideshow-Einstellungen loescht die Datenbank mit.
+  await prisma.$transaction([
+    prisma.slideshowSession.deleteMany({ where: { eventId: event.id } }),
+    prisma.event.delete({ where: { id: event.id } }),
+  ])
 
   revalidatePath('/tenant')
   revalidatePath('/tenant/events')
