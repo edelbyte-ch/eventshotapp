@@ -1,7 +1,6 @@
 import { GetObjectCommand } from '@aws-sdk/client-s3'
 import archiver from 'archiver'
-import pLimit from 'p-limit'
-import { PassThrough } from 'stream'
+import { PassThrough, type Readable } from 'stream'
 import prisma from '@/lib/prisma'
 import { s3 } from '@/lib/s3'
 
@@ -124,11 +123,20 @@ export async function GET(
   archive.pipe(zipStream)
 
   const controller = new AbortController()
+  // Geoeffnete S3-Antworten. Wird ein Body nie zu Ende gelesen und nie
+  // zerstoert, bleibt seine Socket fuer immer belegt — nach 50 solchen
+  // (Pool-Limit des SDK) haengt JEDER weitere S3-Aufruf der App, inkl. des
+  // naechtlichen Foto-Cleanups (so passiert bis 03.10.2026).
+  let current: Readable | null = null
 
-  req.signal.addEventListener('abort', () => {
+  const stop = () => {
     controller.abort()
+    current?.destroy()
+    current = null
     archive.abort()
-  })
+  }
+
+  req.signal.addEventListener('abort', stop)
 
   const zipName = `EventShot_${event.name}.zip`
 
@@ -144,32 +152,38 @@ export async function GET(
   })
 
   // 🔁 ZIP asynchron füllen (Streaming!)
+  // Strikt nacheinander: archiver liest seine Eintraege ohnehin seriell. Wer
+  // vorab weitere GetObjects oeffnet (frueher pLimit(6) — das begrenzte nur
+  // das Oeffnen, nicht das Lesen), parkt deren Sockets in der Warteschlange.
+  // So belegt ein Download hoechstens eine Socket gleichzeitig.
   ;(async () => {
     try {
-      const limit = pLimit(6)
+      for (const photo of event.photos) {
+        if (controller.signal.aborted) return
 
-      const tasks = event.photos.map((photo) =>
-        limit(async () => {
-          const obj = await s3.send(
-            new GetObjectCommand({
-              Bucket: process.env.S3_BUCKET as string,
-              Key: photo.objectKey,
-            }),
-            { abortSignal: controller.signal },
-          )
+        const obj = await s3.send(
+          new GetObjectCommand({
+            Bucket: process.env.S3_BUCKET as string,
+            Key: photo.objectKey,
+          }),
+          { abortSignal: controller.signal },
+        )
+        if (!obj.Body) continue
 
-          if (!obj.Body) return
-
-          archive.append(obj.Body as any, {
-            name: buildFilename(photo),
-          })
-        }),
-      )
-
-      await Promise.all(tasks)
+        const body = obj.Body as Readable
+        current = body
+        const consumed = new Promise<void>((resolve, reject) => {
+          body.once('end', resolve)
+          body.once('close', resolve)
+          body.once('error', reject)
+        })
+        archive.append(body, { name: buildFilename(photo) })
+        await consumed
+        current = null
+      }
       await archive.finalize()
-    } catch (err) {
-      archive.abort()
+    } catch {
+      stop()
     }
   })()
 
