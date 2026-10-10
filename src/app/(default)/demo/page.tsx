@@ -7,6 +7,7 @@ import {
 } from 'lucide-react'
 import type { Metadata } from 'next'
 import Link from 'next/link'
+import { REEL, ReelPlayer } from '@/components/landing/reel-player'
 import { Button } from '@/components/ui/button'
 import { ScrollReveal } from '@/components/ui/motion'
 import { buildMetadata } from '@/lib/seo/metadata'
@@ -22,13 +23,8 @@ export const metadata: Metadata = buildMetadata({
   path: '/demo',
   title: 'Demo-Video ansehen – ohne Registrierung',
   description:
-    'Ein kurzes Video zeigt die Live-Slideshow im Saal – ohne Registrierung. Mit Konto bekommst du dazu ein eigenes Demo-Event: 20 Fotos gratis, voller Funktionsumfang.',
+    'Ein 25-Sekunden-Video zeigt den ganzen Ablauf vom QR-Code bis zur Galerie – ohne Registrierung. Mit Konto bekommst du dazu ein eigenes Demo-Event: 20 Fotos gratis, voller Funktionsumfang.',
 })
-
-// Weboptimierte Fassungen aus /public, identisch zur Startseiten-Sektion.
-const VIDEO_MP4 = '/eventshot-demo-web.mp4'
-const VIDEO_WEBM = '/eventshot-demo-web.webm'
-const POSTER = '/eventshot-demo-poster.jpg'
 
 const ablauf = [
   {
@@ -64,8 +60,8 @@ const grenzen = [
     copy: 'Die Galerie öffnet sich über den QR-Code des jeweiligen Events. Bilder aus Kundenevents stellen wir nirgends zur Ansicht.',
   },
   {
-    title: 'Kein Ton, keine Erzählung',
-    copy: 'Das Video ist stumm und dauert 5 Sekunden. Alles Erklärende steht als Text auf dieser Seite.',
+    title: 'Keine Erzählung',
+    copy: 'Das Video dauert 25 Sekunden, läuft mit Musik und kommt ohne Sprecher aus. Alles Erklärende steht als Text auf dieser Seite.',
   },
 ]
 
@@ -88,7 +84,7 @@ const faq = [
   {
     question: 'Zeigt das Video ein echtes Kundenevent?',
     answer:
-      'Nein. Die Szene ist gestellt und dient als Beispieldarstellung des Aufbaus im Saal. Fotos aus echten Anlässen unserer Kunden veröffentlichen wir nicht.',
+      'Nein. Die Szenen sind gestellt und dienen als Beispieldarstellung des Ablaufs. Fotos aus echten Anlässen unserer Kunden veröffentlichen wir nicht.',
   },
   {
     question: 'Können wir die Slideshow vor dem Fest ausprobieren?',
@@ -103,13 +99,13 @@ const jsonLd = graph(
     { name: 'Demo', path: '/demo' },
   ]),
   videoNode({
-    name: 'EventShot Demo-Video – Slideshow im Festsaal',
+    name: 'EventShot Demo-Video – vom Foto bis zur Galerie',
     description:
-      'Stummes Demo-Video von 5 Sekunden: Blick durch einen festlich gedeckten Saal auf eine Leinwand, auf der ein einzelnes Foto in Grossformat läuft. Beispieldarstellung der Live-Slideshow von EventShot.',
-    contentUrl: `${SITE.url}${VIDEO_MP4}`,
-    thumbnailUrl: `${SITE.url}${POSTER}`,
-    uploadDate: '2025-12-11',
-    duration: 'PT5S',
+      'Demo-Video von 25 Sekunden: Gäste scannen den QR-Code, laden ein Foto ohne App hoch und sehen es live auf der Leinwand. Danach liegen alle Bilder in der gemeinsamen Galerie. Beispieldarstellung von EventShot.',
+    contentUrl: `${SITE.url}${REEL.desktop.src}`,
+    thumbnailUrl: `${SITE.url}${REEL.desktop.poster}`,
+    uploadDate: REEL.uploadDate,
+    duration: REEL.duration,
   }),
   faqNode(faq),
 )
@@ -133,15 +129,15 @@ export default function DemoPage() {
             EventShot im Demo-Video ansehen
           </h1>
           <p className='text-lg text-muted-foreground'>
-            Saal, Leinwand, ein Foto in Grossformat: Das Video zeigt in 5
-            Sekunden, wie eine laufende Slideshow im Raum wirkt. Darunter steht,
+            QR-Code, Upload, Leinwand, Galerie: Das Video zeigt in 25
+            Sekunden den ganzen Ablauf eines Fests mit EventShot. Darunter steht,
             was davor passiert, was danach bleibt und wie du die Oberfläche
             gemeinsam mit uns anschaust.
           </p>
 
           {/* Der Unterschied zum Video darunter: hier bekommt man ein eigenes
               Event mit eigenen Fotos. Das gehoert vor den Player und nicht ans
-              Seitenende — sonst schaut jemand 5 Sekunden zu und geht wieder,
+              Seitenende — sonst schaut jemand 25 Sekunden zu und geht wieder,
               ohne je erfahren zu haben, dass er es selbst ausprobieren kann. */}
           <div className='rounded-2xl border border-primary/25 bg-primary/[0.07] p-6'>
             <p className='text-xs font-semibold uppercase tracking-[0.18em] text-primary'>
@@ -170,26 +166,10 @@ export default function DemoPage() {
       {/* Video */}
       <ScrollReveal>
         <section className='space-y-4'>
-          <div className='overflow-hidden rounded-2xl border border-border shadow-xl'>
-            {/** biome-ignore lint/a11y/useMediaCaption: stummes Demo-Video ohne Sprachinhalt */}
-            <video
-              poster={POSTER}
-              controls
-              preload='none'
-              playsInline
-              aria-label='EventShot Demo-Video'
-              width={1280}
-              height={720}
-              className='w-full h-auto bg-black'
-            >
-              <source src={VIDEO_WEBM} type='video/webm' />
-              <source src={VIDEO_MP4} type='video/mp4' />
-              Dieses Video lässt sich in deinem Browser nicht abspielen.
-            </video>
-          </div>
+          <ReelPlayer />
           <p className='text-sm text-muted-foreground'>
-            Beispieldarstellung, stumm, 5 Sekunden. Die Szene ist gestellt und
-            zeigt kein echtes Kundenevent.
+            Beispieldarstellung, 25 Sekunden, mit Musik. Die Szenen sind
+            gestellt und zeigen kein echtes Kundenevent.
           </p>
         </section>
       </ScrollReveal>
