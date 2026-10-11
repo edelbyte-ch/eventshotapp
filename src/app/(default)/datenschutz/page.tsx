@@ -98,7 +98,7 @@ export default function DatenschutzPage() {
 
       <section id='chat' className='space-y-4 scroll-mt-24'>
         <h2 className='text-2xl font-semibold text-primary'>
-          5. Chat-Assistent (KI)
+          5. Chat-Assistent (KI) und Seitenaufrufe
         </h2>
         <p>
           Über den Chat auf eventshot.ch kannst du freiwillig Fragen stellen –
@@ -122,6 +122,13 @@ export default function DatenschutzPage() {
           Gespräche ohne weitere Anfrage löschen wir nach spätestens 12
           Monaten, Anhänge nach 6 Monaten. Du kannst deinen Chatverlauf
           jederzeit selbst über das Menü im Chat löschen.
+        </p>
+        <p>
+          Zudem wird jeder Seitenaufruf an unser System gemeldet, damit unser
+          Team über Besuche informiert ist: aufgerufene Seite ohne Parameter,
+          Herkunfts-Domain und Gerätetyp (Mobil, Tablet, Desktop) – ohne
+          Cookies, ohne Kennung und ohne Speicherung deiner IP-Adresse. Diese
+          Angaben löschen wir nach 90 Tagen.
         </p>
       </section>
 
