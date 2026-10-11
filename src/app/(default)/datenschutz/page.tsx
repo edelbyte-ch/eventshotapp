@@ -96,8 +96,37 @@ export default function DatenschutzPage() {
         </p>
       </section>
 
+      <section id='chat' className='space-y-4 scroll-mt-24'>
+        <h2 className='text-2xl font-semibold text-primary'>
+          5. Chat-Assistent (KI)
+        </h2>
+        <p>
+          Über den Chat auf eventshot.ch kannst du freiwillig Fragen stellen –
+          ohne Anmeldung. Der Chat wird von EdelByte selbst betrieben
+          (desk.edelbyte.ch). Gespeichert werden deine Nachrichten, allfällige
+          Anhänge, freiwillig angegebene Kontaktdaten sowie wenige technische
+          Angaben (Sprache, Einstiegsseite ohne Parameter, Herkunfts-Domain,
+          Zeitzone). Damit dein Verlauf erhalten bleibt, legt das Chatfenster
+          einen zufälligen Schlüssel im Speicher deines Browsers ab; es werden
+          keine Tracking-Cookies gesetzt.
+        </p>
+        <p>
+          Erste Antworten erstellt ein KI-Assistent. Dazu werden deine
+          Chat-Nachrichten an Anthropic, PBC (USA) übermittelt und dort zur
+          Erstellung der Antwort verarbeitet. Anthropic verwendet diese Daten
+          gemäss seinen Bedingungen für Geschäftskunden nicht zum Training
+          seiner Modelle. Bitte gib im Chat keine besonders schützenswerten
+          Daten ein. Auf Wunsch übernimmt jederzeit ein Mensch.
+        </p>
+        <p>
+          Gespräche ohne weitere Anfrage löschen wir nach spätestens 12
+          Monaten, Anhänge nach 6 Monaten. Du kannst deinen Chatverlauf
+          jederzeit selbst über das Menü im Chat löschen.
+        </p>
+      </section>
+
       <section className='space-y-4'>
-        <h2 className='text-2xl font-semibold text-primary'>5. Deine Rechte</h2>
+        <h2 className='text-2xl font-semibold text-primary'>6. Deine Rechte</h2>
         <p>
           Du hast das Recht auf Auskunft, Berichtigung, Löschung oder
           Einschränkung der Verarbeitung deiner personenbezogenen Daten. Ebenso
@@ -108,7 +137,7 @@ export default function DatenschutzPage() {
 
       <section className='space-y-4'>
         <h2 className='text-2xl font-semibold text-primary'>
-          6. Änderungen dieser Erklärung
+          7. Änderungen dieser Erklärung
         </h2>
         <p>
           Diese Datenschutzerklärung kann jederzeit angepasst werden. Es gilt

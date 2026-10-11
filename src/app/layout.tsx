@@ -101,6 +101,12 @@ export default function RootLayout({
           src="https://umami.edelbyte.ch/script.js"
           data-website-id="81d33849-a760-41dd-9426-f32636c2d3ed"
         />
+        {/* EdelDesk-Chat (KI-Assistent + Team), lädt erst nach dem Seitenaufbau */}
+        <Script
+          src="https://desk.edelbyte.ch/embed/v1.js"
+          data-site="pk_CL0n952jiyfsvh_m"
+          strategy="lazyOnload"
+        />
         {/* Natives <script>: JSON-LD landet so im SSR-HTML (next/script wuerde
             es erst clientseitig injizieren). FAQPage liegt bei der FAQ-Sektion. */}
         <script
