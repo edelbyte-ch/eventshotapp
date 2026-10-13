@@ -8,14 +8,14 @@ import { photoLimitPhrase } from '@/lib/photo-limits'
 
 export const metadata: Metadata = buildMetadata({
   path: '/hochzeit/winterthur',
-  title: 'Fotowand Hochzeit Winterthur – Gästefotos live',
+  title: 'Fotobox Hochzeit Winterthur – digitale Alternative',
   description:
-    'Hochzeit in Industriehallen und Backsteinlofts: Gästefotos per QR-Code, live als Slideshow, danach in der Galerie. Ohne App, DSG-konform.',
+    'Digitale Fotobox für Hochzeiten in Winterthur, von der Industriehalle bis zum Loft: Gästefotos per QR-Code, live gezeigt. Ohne Miete, ab CHF 49.-.',
 })
 
 const content: UseCaseContent = {
-  eyebrow: 'EventShot für Hochzeiten in Winterthur',
-  title: 'Hochzeits-Fotowand für Winterthur',
+  eyebrow: 'Digitale Fotobox für Hochzeiten in Winterthur',
+  title: 'Digitale Fotobox für eure Hochzeit in Winterthur',
   intro:
     'Backsteinhalle auf dem Sulzer-Areal, Bankettsaal im Casinotheater oder Landgasthof im Umland: In Winterthur wird oft zwischen Stahlträgern und hohen Fensterfronten gefeiert. Eure Gäste laden ihre Fotos per QR-Code hoch, ihr seht sie sofort in der Live-Slideshow. Danach bleibt euch die digitale Galerie mit allen Bildern.',
   ablaufTitle: 'So läuft eure Hochzeit in Winterthur',
@@ -47,6 +47,11 @@ const content: UseCaseContent = {
   planReason:
     `Für eine Hochzeit in Winterthur empfehlen wir Premium: einstellbare Anzeigedauer für lange Abende in der Halle, ${photoLimitPhrase('PREMIUM')} und 30 Tage digitale Galerie – Zeit genug, bis auch der letzte Gast seine Bilder gesichert hat.`,
   faq: [
+    {
+      question: 'Lohnt sich das statt einer Fotobox zur Miete in Winterthur?',
+      answer:
+        'Kommt darauf an, was ihr euch wünscht. Eine Mietfotobox bringt Kabine, Drucker und Requisiten mit, kostet in der Schweiz je nach Ausstattung aber rund CHF 150.- bis über CHF 1\'000.- pro Anlass, oft zuzüglich Lieferung und Aufbau. EventShot kostet einmalig ab CHF 49.-: Jeder Gast fotografiert mit dem eigenen Handy, und nichts muss geliefert oder aufgebaut werden. Wollt ihr gedruckte Fotostreifen zum Mitnehmen, bleibt die Mietbox die bessere Wahl.',
+    },
     {
       question: 'Müssen unsere Hochzeitsgäste in Winterthur eine App laden?',
       answer:

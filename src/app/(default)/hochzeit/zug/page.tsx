@@ -8,14 +8,14 @@ import { photoLimitPhrase } from "@/lib/photo-limits";
 
 export const metadata: Metadata = buildMetadata({
   path: "/hochzeit/zug",
-  title: "Hochzeits-Fotowand Zug – Gästefotos live",
+  title: "Fotobox Hochzeit Zug – digitale Alternative",
   description:
-    "Hochzeit am Zugersee, in Cham oder Baar: Fotos der Gäste per QR-Code sammeln, live zeigen und danach behalten. Ohne App, DSG-konform.",
+    "Digitale Fotobox für die Hochzeit am Zugersee, in Cham oder Baar: Gästefotos per QR-Code, live gezeigt, danach Galerie. Ohne Miete, ab CHF 49.-.",
 });
 
 const content: UseCaseContent = {
-  eyebrow: "EventShot für Hochzeiten am Zugersee",
-  title: "Hochzeits-Fotowand für Zug und den Zugersee",
+  eyebrow: "Digitale Fotobox für Hochzeiten am Zugersee",
+  title: "Digitale Fotobox für eure Hochzeit in Zug und am Zugersee",
   intro:
     "Trauung in der Zuger Altstadt, Apéro am Seeufer, Fest in Cham oder Baar: Im kleinsten Hochzeitsradius der Innerschweiz liegen die Stationen eines Tages selten mehr als eine Viertelstunde auseinander. Die Gästeliste reicht dafür weit über den Kanton hinaus – in Zug sitzen laut dem Branchenreport der CV VC 719 der 1’749 Blockchain-Unternehmen des Crypto Valley, dazu zahlreiche weitere internationale Firmensitze, und entsprechend gemischt sind die Tische. Alle laden ihre Fotos per QR-Code hoch, ohne App und ohne Konto, und das Bild erscheint sofort in der Live-Slideshow. Nach dem Fest bleibt euch die digitale Galerie, auf die auch angereiste Gäste von zu Hause aus zugreifen.",
   ablaufTitle: "So läuft euer Hochzeitstag rund um Zug",
@@ -47,6 +47,11 @@ const content: UseCaseContent = {
   planReason:
     `Für eine Hochzeit am Zugersee passt Premium: ${photoLimitPhrase("PREMIUM")} vom Apéro bis spät in die Nacht, einstellbare Anzeigedauer der Slideshow und 30 Tage digitale Galerie – damit auch Gäste, die kurz nach dem Fest wieder zurückfliegen, in Ruhe an ihre Bilder kommen.`,
   faq: [
+    {
+      question: "Lohnt sich das statt einer Fotobox zur Miete in Zug?",
+      answer:
+        "Kommt darauf an, was ihr euch wünscht. Eine Mietfotobox bringt Kabine, Drucker und Requisiten mit, kostet in der Schweiz je nach Ausstattung aber rund CHF 150.- bis über CHF 1'000.- pro Anlass, oft zuzüglich Lieferung und Aufbau. EventShot kostet einmalig ab CHF 49.-: Jeder Gast fotografiert mit dem eigenen Handy, und nichts muss geliefert oder aufgebaut werden. Wollt ihr gedruckte Fotostreifen zum Mitnehmen, bleibt die Mietbox die bessere Wahl.",
+    },
     {
       question: "Müssen unsere Gäste für den Upload eine App installieren?",
       answer:

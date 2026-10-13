@@ -8,14 +8,14 @@ import { photoLimitPhrase, photoLimitRange } from '@/lib/photo-limits'
 
 export const metadata: Metadata = buildMetadata({
   path: '/hochzeit/aarau',
-  title: 'Hochzeits-Fotowand Aarau – Gästefotos live',
+  title: 'Fotobox Hochzeit Aarau – digitale Alternative',
   description:
-    'Hochzeit im Aargau, von der Altstadt bis zum Schloss: Gästefotos per QR-Code sammeln, live zeigen, Galerie behalten. Ohne App, DSG-konform.',
+    'Digitale Fotobox für Hochzeiten im Aargau: Gästefotos per QR-Code sammeln, live zeigen, Galerie behalten. Ohne Miete, ohne App, ab CHF 49.-.',
 })
 
 const content: UseCaseContent = {
-  eyebrow: 'EventShot für Hochzeiten in Aarau',
-  title: 'Hochzeits-Fotowand für Aarau',
+  eyebrow: 'Digitale Fotobox für Hochzeiten in Aarau',
+  title: 'Digitale Fotobox für eure Hochzeit in Aarau',
   intro:
     'Trauung in der Aarauer Altstadt, Apéro im Schlosshof, Fest im Saal am Schlossplatz: Aargauer Hochzeiten spielen sich oft an mehreren Orten eines Tages ab. Mit EventShot kommen die Bilder aller Gäste trotzdem an einem Ort zusammen – per QR-Code hochgeladen, live als Slideshow gezeigt, danach als digitale Galerie behalten.',
   ablaufTitle: 'So läuft eure Hochzeit in Aarau',
@@ -47,6 +47,11 @@ const content: UseCaseContent = {
   planReason:
     `Für eine Hochzeit im Aargau passt Premium: ${photoLimitPhrase('PREMIUM')} über den ganzen Tag, einstellbare Anzeigedauer der Slideshow und 30 Tage digitale Galerie – auch Gäste, die erst später nachschauen, finden alle Bilder noch vor.`,
   faq: [
+    {
+      question: 'Lohnt sich das statt einer Fotobox zur Miete in Aarau?',
+      answer:
+        'Kommt darauf an, was ihr euch wünscht. Eine Mietfotobox bringt Kabine, Drucker und Requisiten mit, kostet in der Schweiz je nach Ausstattung aber rund CHF 150.- bis über CHF 1\'000.- pro Anlass, oft zuzüglich Lieferung und Aufbau. EventShot kostet einmalig ab CHF 49.-: Jeder Gast fotografiert mit dem eigenen Handy, und nichts muss geliefert oder aufgebaut werden. Wollt ihr gedruckte Fotostreifen zum Mitnehmen, bleibt die Mietbox die bessere Wahl.',
+    },
     {
       question: 'Braucht es für die Fotowand eine App auf dem Handy?',
       answer:

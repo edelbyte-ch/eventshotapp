@@ -8,14 +8,14 @@ import { photoLimitPhrase } from '@/lib/photo-limits'
 
 export const metadata: Metadata = buildMetadata({
   path: '/hochzeit/zuerich',
-  title: 'Hochzeits-Fotowand Zürich – Gästefotos live',
+  title: 'Fotobox Hochzeit Zürich – digitale Alternative',
   description:
-    'Für Hochzeiten in Zürich und am See: Gästefotos per QR-Code, live als Slideshow im Saal, danach digitale Galerie. Ohne App, DSG-konform.',
+    'Digitale Fotobox für Hochzeiten in Zürich und am See: Gästefotos per QR-Code, live als Slideshow im Saal, danach Galerie. Ohne Miete, ab CHF 49.-.',
 })
 
 const content: UseCaseContent = {
-  eyebrow: 'EventShot für Hochzeiten in Zürich',
-  title: 'Eure Hochzeits-Fotowand für Zürich.',
+  eyebrow: 'Digitale Fotobox für Hochzeiten in Zürich',
+  title: 'Digitale Fotobox für eure Hochzeit in Zürich',
   intro:
     'Ob im Kunsthaus, im Papiersaal der alten Sihlpapierfabrik, am Wasser beim Lake Side oder in einem Landgasthof im Zürcher Oberland: Zürcher Hochzeiten verteilen sich über sehr unterschiedliche Häuser – und die Anreise der Gäste über die halbe Deutschschweiz. Die Bilder landen trotzdem an einem Ort. Eure Gäste laden per QR-Code hoch, die Slideshow läuft live auf der Leinwand, und danach bleibt euch die digitale Galerie.',
   ablaufTitle: 'So läuft euer Fest in Zürich',
@@ -47,6 +47,11 @@ const content: UseCaseContent = {
   planReason:
     `Für eine Zürcher Hochzeit empfehlen wir Premium: ${photoLimitPhrase('PREMIUM')} für einen langen Abend, einstellbare Anzeigedauer für die Slideshow und 30 Tage digitale Galerie – genug Zeit, bis auch die weit angereisten Gäste ihre Bilder in Ruhe geholt haben.`,
   faq: [
+    {
+      question: 'Lohnt sich das statt einer Fotobox zur Miete in Zürich?',
+      answer:
+        'Kommt darauf an, was ihr euch wünscht. Eine Mietfotobox bringt Kabine, Drucker und Requisiten mit, kostet in der Schweiz je nach Ausstattung aber rund CHF 150.- bis über CHF 1\'000.- pro Anlass, oft zuzüglich Lieferung und Aufbau. EventShot kostet einmalig ab CHF 49.-: Jeder Gast fotografiert mit dem eigenen Handy, und nichts muss geliefert oder aufgebaut werden. Wollt ihr gedruckte Fotostreifen zum Mitnehmen, bleibt die Mietbox die bessere Wahl.',
+    },
     {
       question: 'Müssen unsere Gäste zuerst eine App herunterladen?',
       answer:
