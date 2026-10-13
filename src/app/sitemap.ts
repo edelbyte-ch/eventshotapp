@@ -11,6 +11,8 @@ const BASE_URL = 'https://eventshot.ch'
  * einer Seite hier das Datum nachziehen.
  */
 const CONTENT_UPDATED = new Date('2026-08-19')
+// Staedteseiten auf «Fotobox + Stadt» umgestellt.
+const CITY_PAGES_UPDATED = new Date('2026-10-13')
 const LEGAL_UPDATED = new Date('2026-06-29')
 /** Startseite und /demo: Demo-Event mit 20 Gratis-Fotos ergaenzt. */
 const DEMO_UPDATED = new Date('2026-09-02')
@@ -52,14 +54,14 @@ const ENTRIES: Entry[] = [
   { path: '/ratgeber', priority: 0.8, changeFrequency: 'weekly', lastModified: CONTENT_UPDATED },
   { path: '/taufe', priority: 0.8, changeFrequency: 'monthly', lastModified: CONTENT_UPDATED },
   { path: '/ueber-uns', priority: 0.6, changeFrequency: 'yearly', lastModified: CONTENT_UPDATED },
-  { path: '/hochzeit/aarau', priority: 0.7, changeFrequency: 'monthly', lastModified: CONTENT_UPDATED },
-  { path: '/hochzeit/basel', priority: 0.7, changeFrequency: 'monthly', lastModified: CONTENT_UPDATED },
-  { path: '/hochzeit/bern', priority: 0.7, changeFrequency: 'monthly', lastModified: CONTENT_UPDATED },
-  { path: '/hochzeit/luzern', priority: 0.7, changeFrequency: 'monthly', lastModified: CONTENT_UPDATED },
-  { path: '/hochzeit/st-gallen', priority: 0.7, changeFrequency: 'monthly', lastModified: CONTENT_UPDATED },
-  { path: '/hochzeit/winterthur', priority: 0.7, changeFrequency: 'monthly', lastModified: CONTENT_UPDATED },
-  { path: '/hochzeit/zuerich', priority: 0.7, changeFrequency: 'monthly', lastModified: CONTENT_UPDATED },
-  { path: '/hochzeit/zug', priority: 0.7, changeFrequency: 'monthly', lastModified: CONTENT_UPDATED },
+  { path: '/hochzeit/aarau', priority: 0.7, changeFrequency: 'monthly', lastModified: CITY_PAGES_UPDATED },
+  { path: '/hochzeit/basel', priority: 0.7, changeFrequency: 'monthly', lastModified: CITY_PAGES_UPDATED },
+  { path: '/hochzeit/bern', priority: 0.7, changeFrequency: 'monthly', lastModified: CITY_PAGES_UPDATED },
+  { path: '/hochzeit/luzern', priority: 0.7, changeFrequency: 'monthly', lastModified: CITY_PAGES_UPDATED },
+  { path: '/hochzeit/st-gallen', priority: 0.7, changeFrequency: 'monthly', lastModified: CITY_PAGES_UPDATED },
+  { path: '/hochzeit/winterthur', priority: 0.7, changeFrequency: 'monthly', lastModified: CITY_PAGES_UPDATED },
+  { path: '/hochzeit/zuerich', priority: 0.7, changeFrequency: 'monthly', lastModified: CITY_PAGES_UPDATED },
+  { path: '/hochzeit/zug', priority: 0.7, changeFrequency: 'monthly', lastModified: CITY_PAGES_UPDATED },
   { path: '/ratgeber/beamer-oder-tv-slideshow', priority: 0.7, changeFrequency: 'monthly', lastModified: CONTENT_UPDATED },
   { path: '/ratgeber/braucht-man-eine-fotobox', priority: 0.7, changeFrequency: 'monthly', lastModified: CONTENT_UPDATED },
   { path: '/ratgeber/datenschutz-hochzeitsfotos', priority: 0.7, changeFrequency: 'monthly', lastModified: CONTENT_UPDATED },

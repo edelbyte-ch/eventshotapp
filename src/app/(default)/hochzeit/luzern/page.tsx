@@ -7,14 +7,14 @@ import { buildMetadata } from '@/lib/seo/metadata'
 
 export const metadata: Metadata = buildMetadata({
   path: '/hochzeit/luzern',
-  title: 'Hochzeits-Fotowand Luzern – Gästefotos live',
+  title: 'Fotobox Hochzeit Luzern – digitale Alternative',
   description:
-    'Hochzeit am Vierwaldstättersee: Gäste laden Fotos per QR-Code hoch, die Slideshow läuft live, die Galerie bleibt. Ohne App, DSG-konform.',
+    'Digitale Fotobox für die Hochzeit am Vierwaldstättersee: Gäste laden Fotos per QR-Code hoch, live als Slideshow, danach Galerie. Ohne Miete, ab CHF 49.-.',
 })
 
 const content: UseCaseContent = {
-  eyebrow: 'EventShot für Hochzeiten in Luzern',
-  title: 'Hochzeits-Fotowand für Luzern',
+  eyebrow: 'Digitale Fotobox für Hochzeiten in Luzern',
+  title: 'Digitale Fotobox für eure Hochzeit in Luzern',
   intro:
     'Trauung am Wasser, Apéro auf der Terrasse, Fest im Bankettsaal: Eine Hochzeit in Luzern und der Zentralschweiz lebt von der Aussicht – und jeder Gast fotografiert sie anders. Alle Bilder landen per QR-Code an einem Ort und laufen sofort in der Live-Slideshow. Danach bleibt euch die digitale Galerie.',
   ablaufTitle: 'So läuft euer Hochzeitstag am See',
@@ -46,6 +46,11 @@ const content: UseCaseContent = {
   planReason:
     'Für eine Hochzeit am Vierwaldstättersee empfehlen wir Premium: 30 Tage digitale Galerie, einstellbare Anzeigedauer und ruhige Übergänge – damit auch Gäste, die am Sonntag zurückreisen, alles in Ruhe herunterladen können.',
   faq: [
+    {
+      question: 'Lohnt sich das statt einer Fotobox zur Miete in Luzern?',
+      answer:
+        'Kommt darauf an, was ihr euch wünscht. Eine Mietfotobox bringt Kabine, Drucker und Requisiten mit, kostet in der Schweiz je nach Ausstattung aber rund CHF 150.- bis über CHF 1\'000.- pro Anlass, oft zuzüglich Lieferung und Aufbau. EventShot kostet einmalig ab CHF 49.-: Jeder Gast fotografiert mit dem eigenen Handy, und nichts muss geliefert oder aufgebaut werden. Wollt ihr gedruckte Fotostreifen zum Mitnehmen, bleibt die Mietbox die bessere Wahl.',
+    },
     {
       question: 'Brauchen unsere Gäste eine App für die Fotos?',
       answer:

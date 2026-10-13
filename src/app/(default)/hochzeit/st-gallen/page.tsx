@@ -8,14 +8,14 @@ import { photoLimitPhrase } from "@/lib/photo-limits";
 
 export const metadata: Metadata = buildMetadata({
   path: "/hochzeit/st-gallen",
-  title: "Fotowand Hochzeit St. Gallen – Gästefotos live",
+  title: "Fotobox Hochzeit St. Gallen – digitale Alternative",
   description:
-    "Hochzeit in der Ostschweiz und am Bodensee: Gästefotos per QR-Code, live als Slideshow, danach digitale Galerie. Ohne App, DSG-konform.",
+    "Digitale Fotobox für Hochzeiten in St. Gallen und am Bodensee: Gästefotos per QR-Code, live als Slideshow, danach Galerie. Ohne Miete, ab CHF 49.-.",
 });
 
 const content: UseCaseContent = {
-  eyebrow: "EventShot für Hochzeiten in der Ostschweiz",
-  title: "Hochzeits-Fotowand für St. Gallen und die Ostschweiz",
+  eyebrow: "Digitale Fotobox für Hochzeiten in der Ostschweiz",
+  title: "Digitale Fotobox für eure Hochzeit in St. Gallen und der Ostschweiz",
   intro:
     "Trauung beim Stiftsbezirk, Apéro auf dem Klosterplatz, Fest im Gewölbekeller oder unten am Bodensee: In der Ostschweiz führt ein Hochzeitstag oft von der Höhe der Stadt hinunter ans Wasser. Die Räume dazwischen sind sehr verschieden gross – der Pfalzkeller beim Klosterplatz fasst nach Betreiberangaben rund 75 bis 300 Personen, die Einstein Hall im Einstein St.Gallen bis etwa 400. Eure Gäste laden ihre Fotos überall per QR-Code hoch, ohne App und ohne Konto, und sehen sie sofort in der Live-Slideshow. Nach dem Fest bleibt euch die digitale Galerie mit allen Bildern – auch mit denen, die ihr an eurem eigenen Tag verpasst habt.",
   ablaufTitle: "So läuft euer Hochzeitstag in der Ostschweiz",
@@ -47,6 +47,11 @@ const content: UseCaseContent = {
   planReason:
     `Für eine Ostschweizer Hochzeit empfehlen wir Premium: ${photoLimitPhrase("PREMIUM")} für einen Tag an zwei Orten, einstellbare Anzeigedauer der Slideshow und 30 Tage digitale Galerie – Zeit genug, bis auch die Bilder vom Bodensee vollständig beisammen sind.`,
   faq: [
+    {
+      question: "Lohnt sich das statt einer Fotobox zur Miete in St. Gallen?",
+      answer:
+        "Kommt darauf an, was ihr euch wünscht. Eine Mietfotobox bringt Kabine, Drucker und Requisiten mit, kostet in der Schweiz je nach Ausstattung aber rund CHF 150.- bis über CHF 1'000.- pro Anlass, oft zuzüglich Lieferung und Aufbau. EventShot kostet einmalig ab CHF 49.-: Jeder Gast fotografiert mit dem eigenen Handy, und nichts muss geliefert oder aufgebaut werden. Wollt ihr gedruckte Fotostreifen zum Mitnehmen, bleibt die Mietbox die bessere Wahl.",
+    },
     {
       question:
         "Unsere Gäste kommen aus dem Rheintal und dem Toggenburg. Müssen sie eine App installieren?",

@@ -8,14 +8,14 @@ import { photoLimitPhrase } from '@/lib/photo-limits'
 
 export const metadata: Metadata = buildMetadata({
   path: '/hochzeit/bern',
-  title: 'Hochzeits-Fotowand Bern – Gästefotos live',
+  title: 'Fotobox Hochzeit Bern – digitale Alternative',
   description:
-    'Vom Altstadtgewölbe bis zum Landgasthof: Gästefotos per QR-Code sammeln, live zeigen, digitale Galerie behalten. Ohne App, DSG-konform.',
+    'Digitale Fotobox für Hochzeiten in Bern, vom Altstadtgewölbe bis zum Landgasthof: Gästefotos per QR-Code, live gezeigt. Ohne Miete, ab CHF 49.-.',
 })
 
 const content: UseCaseContent = {
-  eyebrow: 'EventShot für Hochzeiten im Raum Bern',
-  title: 'Hochzeits-Fotowand für Bern und das Umland.',
+  eyebrow: 'Digitale Fotobox für Hochzeiten im Raum Bern',
+  title: 'Digitale Fotobox für eure Hochzeit in Bern und im Umland',
   intro:
     'Barockes Gewölbe in der Altstadt, ein Bankettsaal mit Blick über die Dächer, ein Landgasthof im Emmental: Berner Hochzeiten spielen zwischen Sandstein und Land – ob im Kornhauskeller, im Kursaal, im Bellevue Palace oder auf einem Schloss im Seeland. Eure Gäste sammeln die Bilder per QR-Code, die Live-Slideshow zeigt sie sofort. Die digitale Galerie hält den Tag fest, wenn längst alle wieder zu Hause sind.',
   ablaufTitle: 'So läuft eure Berner Hochzeit',
@@ -47,6 +47,11 @@ const content: UseCaseContent = {
   planReason:
     `Für eine Berner Hochzeit empfehlen wir Premium: einstellbare Anzeigedauer, damit jedes Bild lange genug an der Gewölbewand steht, ${photoLimitPhrase('PREMIUM')} vom Apéro bis zur Schlussrunde und 30 Tage digitale Galerie – genug Zeit für alle, die erst am Sonntag ans Nachschauen denken.`,
   faq: [
+    {
+      question: 'Lohnt sich das statt einer Fotobox zur Miete in Bern?',
+      answer:
+        'Kommt darauf an, was ihr euch wünscht. Eine Mietfotobox bringt Kabine, Drucker und Requisiten mit, kostet in der Schweiz je nach Ausstattung aber rund CHF 150.- bis über CHF 1\'000.- pro Anlass, oft zuzüglich Lieferung und Aufbau. EventShot kostet einmalig ab CHF 49.-: Jeder Gast fotografiert mit dem eigenen Handy, und nichts muss geliefert oder aufgebaut werden. Wollt ihr gedruckte Fotostreifen zum Mitnehmen, bleibt die Mietbox die bessere Wahl.',
+    },
     {
       question: 'Braucht es für den Upload eine App auf dem Handy?',
       answer:

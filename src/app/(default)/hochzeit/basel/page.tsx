@@ -7,14 +7,14 @@ import { buildMetadata } from '@/lib/seo/metadata'
 
 export const metadata: Metadata = buildMetadata({
   path: '/hochzeit/basel',
-  title: 'Hochzeits-Fotowand Basel – Gästefotos live',
+  title: 'Fotobox Hochzeit Basel – digitale Alternative',
   description:
-    'Hochzeit am Rhein oder im Baselbiet: Alle Gästefotos per QR-Code an einem Ort, live auf der Leinwand und danach in der Galerie. Ohne App.',
+    'Digitale Fotobox für die Hochzeit am Rhein oder im Baselbiet: Gästefotos per QR-Code, live auf der Leinwand, danach Galerie. Ohne Miete, ab CHF 49.-.',
 })
 
 const content: UseCaseContent = {
-  eyebrow: 'EventShot für Hochzeiten in Basel',
-  title: 'Hochzeits-Fotowand für Basel',
+  eyebrow: 'Digitale Fotobox für Hochzeiten in Basel',
+  title: 'Digitale Fotobox für eure Hochzeit in Basel',
   intro:
     'Trauung in der Altstadt, Apéro am Rheinufer, Fest in einer historischen Halle: In Basel verteilt sich ein Hochzeitstag oft über mehrere Orte und zwei Rheinseiten. Eure Gäste laden ihre Fotos unterwegs per QR-Code hoch und sehen sie sofort in der Live-Slideshow. Nach dem Fest bleibt euch die digitale Galerie mit allen Bildern.',
   ablaufTitle: 'So läuft euer Hochzeitstag in Basel',
@@ -46,6 +46,11 @@ const content: UseCaseContent = {
   planReason:
     'Für Hochzeiten in Basel empfehlen wir Premium: einstellbare Anzeigedauer für lange Abende, elegante Übergänge auf der Leinwand und 30 Tage digitale Galerie – genug Zeit, bis auch die letzten Bilder hochgeladen sind.',
   faq: [
+    {
+      question: 'Lohnt sich das statt einer Fotobox zur Miete in Basel?',
+      answer:
+        'Kommt darauf an, was ihr euch wünscht. Eine Mietfotobox bringt Kabine, Drucker und Requisiten mit, kostet in der Schweiz je nach Ausstattung aber rund CHF 150.- bis über CHF 1\'000.- pro Anlass, oft zuzüglich Lieferung und Aufbau. EventShot kostet einmalig ab CHF 49.-: Jeder Gast fotografiert mit dem eigenen Handy, und nichts muss geliefert oder aufgebaut werden. Wollt ihr gedruckte Fotostreifen zum Mitnehmen, bleibt die Mietbox die bessere Wahl.',
+    },
     {
       question: 'Müssen unsere Hochzeitsgäste eine App installieren?',
       answer:
