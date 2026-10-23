@@ -23,7 +23,7 @@ export const metadata: Metadata = buildMetadata({
   path: '/demo',
   title: 'Demo-Video ansehen – ohne Registrierung',
   description:
-    'Ein 25-Sekunden-Video zeigt den ganzen Ablauf vom QR-Code bis zur Galerie – ohne Registrierung. Mit Konto bekommst du dazu ein eigenes Demo-Event: 20 Fotos gratis, voller Funktionsumfang.',
+    'Das 25-Sekunden-Video zeigt den Ablauf vom QR-Code bis zur Galerie, ohne Registrierung. Mit Konto gibt es ein eigenes Demo-Event mit 20 Gratis-Fotos.',
 })
 
 const ablauf = [

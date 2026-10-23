@@ -9,7 +9,12 @@ import { formatPhotoCount, photoLimitPhrase } from '@/lib/photo-limits'
 import { promotionMonthsLabel } from '@/lib/promotions'
 import { getDisplayPromotion } from '@/lib/promotions.server'
 import { buildMetadata } from '@/lib/seo/metadata'
-import { breadcrumbNode, faqNode, graph } from '@/lib/seo/schema'
+import {
+  breadcrumbNode,
+  faqNode,
+  graph,
+  softwareApplicationNode,
+} from '@/lib/seo/schema'
 
 const PREISE = pricingPlans.map((p) => p.price.replace('CHF ', ''))
 
@@ -109,6 +114,9 @@ const jsonLd = graph(
     { name: 'Home', path: '/' },
     { name: 'Preise', path: '/preise' },
   ]),
+  // Paketpreise als Offer-Knoten, damit Suchmaschinen und KI-Agenten die
+  // Preise direkt auf der Preisseite maschinenlesbar finden.
+  softwareApplicationNode(),
   faqNode(FAQ),
 )
 

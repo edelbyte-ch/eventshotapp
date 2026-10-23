@@ -19,6 +19,8 @@ export const ORG_ID = 'https://edelbyte.ch/#organization'
 export const WEBSITE_ID = `${SITE.url}/#website`
 export const SOFTWARE_ID = `${SITE.url}/#software`
 export const SERVICE_ID = `${SITE.url}/#service`
+/** Gruender und Autor der Ratgeber; die Person ist auf /ueber-uns genannt. */
+export const PERSON_ID = `${SITE.url}/ueber-uns#endrit-veliji`
 
 type JsonObject = Record<string, unknown>
 
@@ -41,7 +43,16 @@ export function organizationNode(): JsonObject {
       addressRegion: 'ZH',
       addressCountry: 'CH',
     },
-    founder: { '@type': 'Person', name: 'Endrit Veliji' },
+    // Inline mit @id, damit Article-Knoten den Autor per Referenz finden –
+    // der Organisations-Knoten steht auf jeder Seite.
+    founder: {
+      '@type': 'Person',
+      '@id': PERSON_ID,
+      name: 'Endrit Veliji',
+      jobTitle: 'Gründer und Entwickler von EventShot',
+      url: `${SITE.url}/ueber-uns`,
+      worksFor: { '@id': ORG_ID },
+    },
     sameAs: [
       // Jedes hier gelistete Profil muss auf der Seite auch sichtbar
       // verlinkt sein – der Footer verlinkt das EventShot-Profil.
@@ -96,7 +107,7 @@ export function softwareApplicationNode(): JsonObject {
       name: offer.name,
       price: offer.price,
       priceCurrency: 'CHF',
-      url: `${SITE.url}/#pricing`,
+      url: `${SITE.url}/preise`,
       availability: 'https://schema.org/InStock',
     })),
     featureList: [
@@ -212,7 +223,7 @@ export function articleNode(input: {
     dateModified: input.dateModified ?? input.datePublished,
     image: input.image ?? SITE.ogImage,
     inLanguage: SITE.locale,
-    author: { '@id': ORG_ID },
+    author: { '@id': PERSON_ID },
     publisher: { '@id': ORG_ID },
   }
 }

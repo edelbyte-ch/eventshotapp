@@ -8,7 +8,7 @@ import { breadcrumbNode, faqNode, graph } from '@/lib/seo/schema'
 
 export const metadata: Metadata = buildMetadata({
   path: '/qr-code-vorlagen',
-  title: 'QR-Code auf Tischkarte & Schild richtig gestalten',
+  title: 'QR-Code auf Tischkarte & Schild gestalten',
   description:
     'Welche Grösse der QR-Code auf Tischkarte und Aufsteller braucht, wohin er im Saal gehört und welcher Begleittext Gäste zum Hochladen bringt.',
 })

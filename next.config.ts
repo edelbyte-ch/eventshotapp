@@ -2,6 +2,8 @@ import type { NextConfig } from 'next'
 
 const nextConfig: NextConfig = {
   output: 'standalone',
+  // Kein «X-Powered-By: Next.js» – verraet nur den Stack.
+  poweredByHeader: false,
   reactCompiler: true,
   cacheComponents: true,
   images: {

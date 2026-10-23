@@ -28,12 +28,23 @@ export type ArticleContent = {
   ctaText: string
 }
 
+/** '2026-08-19' → '19. August 2026', ohne Zeitzonen-Verschiebung. */
+function formatDate(iso: string) {
+  return new Intl.DateTimeFormat('de-CH', {
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric',
+    timeZone: 'UTC',
+  }).format(new Date(`${iso}T00:00:00Z`))
+}
+
 /**
  * Ratgeber-Artikel mit Article-, FAQPage- und BreadcrumbList-Markup.
  * Bewusst eine Server-Komponente: Der Fliesstext steht vollstaendig im
  * SSR-HTML und ist ohne JavaScript lesbar.
  */
 export function ArticlePage({ content }: { content: ArticleContent }) {
+  const updated = content.dateModified ?? content.datePublished
   const jsonLd = graph(
     breadcrumbNode([
       { name: 'Home', path: '/' },
@@ -86,6 +97,20 @@ export function ArticlePage({ content }: { content: ArticleContent }) {
             {content.title}
           </h1>
           <p className='text-lg text-muted-foreground'>{content.lead}</p>
+          {/* Sichtbarer Autor und Stand – dieselben Angaben wie im
+              Article-Markup (E-E-A-T, Aktualitaet fuer KI-Suchen). */}
+          <p className='text-sm text-muted-foreground'>
+            Von{' '}
+            <Link
+              href='/ueber-uns'
+              rel='author'
+              className='font-medium text-foreground hover:text-primary transition-colors'
+            >
+              Endrit Veliji
+            </Link>
+            , Gründer von EventShot · Aktualisiert am{' '}
+            <time dateTime={updated}>{formatDate(updated)}</time>
+          </p>
         </header>
 
         <div className='mt-12 space-y-6'>

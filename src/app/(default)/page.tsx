@@ -20,7 +20,7 @@ export const metadata: Metadata = buildMetadata({
   title: 'EventShot – Live-Fotowand & Slideshow für Hochzeit & Fest',
   absoluteTitle: true,
   description:
-    'Die Live-Fotowand & Slideshow für Hochzeit, Geburtstag und private Feiern: Gäste laden Fotos per QR-Code hoch – ohne App – und sehen sie live. Mit digitaler Galerie.',
+    'Live-Fotowand & Slideshow für Hochzeit, Geburtstag und private Feiern: Gäste laden Fotos per QR-Code hoch – ohne App – und sehen sie live. Mit Galerie.',
 })
 
 export default async function HomePage() {

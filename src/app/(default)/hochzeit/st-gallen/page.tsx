@@ -8,7 +8,7 @@ import { photoLimitPhrase } from "@/lib/photo-limits";
 
 export const metadata: Metadata = buildMetadata({
   path: "/hochzeit/st-gallen",
-  title: "Fotobox Hochzeit St. Gallen – digitale Alternative",
+  title: "Fotobox Hochzeit St. Gallen – digitale Variante",
   description:
     "Digitale Fotobox für Hochzeiten in St. Gallen und am Bodensee: Gästefotos per QR-Code, live als Slideshow, danach Galerie. Ohne Miete, ab CHF 49.-.",
 });

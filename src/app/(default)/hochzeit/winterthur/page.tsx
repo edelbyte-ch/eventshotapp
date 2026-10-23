@@ -8,7 +8,7 @@ import { photoLimitPhrase } from '@/lib/photo-limits'
 
 export const metadata: Metadata = buildMetadata({
   path: '/hochzeit/winterthur',
-  title: 'Fotobox Hochzeit Winterthur – digitale Alternative',
+  title: 'Fotobox Hochzeit Winterthur – digitale Variante',
   description:
     'Digitale Fotobox für Hochzeiten in Winterthur, von der Industriehalle bis zum Loft: Gästefotos per QR-Code, live gezeigt. Ohne Miete, ab CHF 49.-.',
 })
