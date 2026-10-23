@@ -16,6 +16,8 @@ const CITY_PAGES_UPDATED = new Date('2026-10-13')
 const LEGAL_UPDATED = new Date('2026-06-29')
 /** Startseite und /demo: Demo-Event mit 20 Gratis-Fotos ergaenzt. */
 const DEMO_UPDATED = new Date('2026-09-02')
+/** Seiten, bei denen ChatGPT im Test andere Anbieter empfahl, ueberarbeitet. */
+const AI_ANSWERS_UPDATED = new Date('2026-10-24')
 
 type Entry = {
   path: string
@@ -38,9 +40,9 @@ const ENTRIES: Entry[] = [
   { path: '/fotichaschte-alternative', priority: 0.7, changeFrequency: 'monthly', lastModified: CONTENT_UPDATED },
   { path: '/fotobox-alternative', priority: 0.9, changeFrequency: 'monthly', lastModified: CONTENT_UPDATED },
   { path: '/fotobox-kosten-schweiz', priority: 0.8, changeFrequency: 'monthly', lastModified: CONTENT_UPDATED },
-  { path: '/fotobox-ohne-app', priority: 0.7, changeFrequency: 'monthly', lastModified: CONTENT_UPDATED },
+  { path: '/fotobox-ohne-app', priority: 0.7, changeFrequency: 'monthly', lastModified: AI_ANSWERS_UPDATED },
   { path: '/funktionen', priority: 0.8, changeFrequency: 'monthly', lastModified: CONTENT_UPDATED },
-  { path: '/geburtstag', priority: 0.8, changeFrequency: 'monthly', lastModified: CONTENT_UPDATED },
+  { path: '/geburtstag', priority: 0.8, changeFrequency: 'monthly', lastModified: AI_ANSWERS_UPDATED },
   { path: '/hochzeit', priority: 0.9, changeFrequency: 'monthly', lastModified: CONTENT_UPDATED },
   { path: '/impressum', priority: 0.2, changeFrequency: 'yearly', lastModified: LEGAL_UPDATED },
   { path: '/jubilaeum', priority: 0.8, changeFrequency: 'monthly', lastModified: CONTENT_UPDATED },
@@ -71,7 +73,7 @@ const ENTRIES: Entry[] = [
   { path: '/ratgeber/hochzeit-fotoprogramm-planen', priority: 0.7, changeFrequency: 'monthly', lastModified: CONTENT_UPDATED },
   { path: '/ratgeber/hochzeitsbudget-fotos', priority: 0.7, changeFrequency: 'monthly', lastModified: CONTENT_UPDATED },
   { path: '/ratgeber/hochzeitsfotos-archivieren', priority: 0.7, changeFrequency: 'monthly', lastModified: CONTENT_UPDATED },
-  { path: '/ratgeber/hochzeitsfotos-teilen-ohne-whatsapp', priority: 0.7, changeFrequency: 'monthly', lastModified: CONTENT_UPDATED },
+  { path: '/ratgeber/hochzeitsfotos-teilen-ohne-whatsapp', priority: 0.7, changeFrequency: 'monthly', lastModified: AI_ANSWERS_UPDATED },
   { path: '/ratgeber/qr-code-tischkarten-gestalten', priority: 0.7, changeFrequency: 'monthly', lastModified: CONTENT_UPDATED },
   { path: '/ratgeber/taufe-fotos-diskret-sammeln', priority: 0.7, changeFrequency: 'monthly', lastModified: CONTENT_UPDATED },
 ]

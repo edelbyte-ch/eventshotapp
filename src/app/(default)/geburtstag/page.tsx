@@ -8,16 +8,16 @@ import { photoLimitPhrase } from '@/lib/photo-limits'
 
 export const metadata: Metadata = buildMetadata({
   path: '/geburtstag',
-  title: 'Geburtstags-Fotowand & Slideshow für deine Party',
+  title: 'Live-Slideshow mit Gästefotos am Geburtstag',
   description:
-    'Deine Gäste laden Fotos per QR-Code hoch, alles läuft live auf TV oder Beamer. Danach bleibt die digitale Galerie. Ohne App, DSG-konform.',
+    'Gäste scannen einen QR-Code, laden Fotos ohne App hoch und sehen sie Sekunden später als Slideshow auf Beamer oder TV. Ab CHF 49.- pro Party.',
 })
 
 const content: UseCaseContent = {
   eyebrow: 'EventShot für Geburtstage',
-  title: 'Deine Party, live auf dem Screen.',
+  title: 'Live-Slideshow mit Gästefotos für deinen Geburtstag',
   intro:
-    'Ob runder Geburtstag, Party im Freundeskreis oder spontane Feier: Mit EventShot teilen alle Gäste ihre Schnappschüsse in Echtzeit. Foto hochladen, sofort als Slideshow auf der Leinwand sehen – und nach der Party bleibt euch alles in einer digitalen Galerie als Erinnerung.',
+    'Mit EventShot laufen die Fotos deiner Gäste live als Slideshow auf Beamer oder TV: Gäste scannen einen QR-Code, laden ihre Bilder im Browser hoch – ohne App und ohne Konto – und Sekunden später sind sie auf dem Screen. Ob runder Geburtstag oder Party im Freundeskreis: Nach dem Fest bleibt alles in einer digitalen Galerie.',
   ablaufTitle: 'So läuft deine Party',
   ablauf: [
     {
@@ -61,6 +61,21 @@ const content: UseCaseContent = {
       question: 'Was brauche ich vor Ort?',
       answer:
         'Einen Bildschirm oder Beamer mit Browser und Internet. Slideshow im Browser öffnen – fertig.',
+    },
+    {
+      question: 'Beamer oder Fernseher – was eignet sich besser?',
+      answer:
+        'Im hellen Raum oder bei Tageslicht ist ein grosser Fernseher meist besser lesbar. Am Abend und für viele Gäste wirkt ein Beamer auf der Leinwand eindrücklicher. EventShot läuft auf beidem, angeschlossen ist ein Laptop, Tablet oder Smart-TV mit Browser.',
+    },
+    {
+      question: 'Was kostet die Slideshow für einen Geburtstag?',
+      answer:
+        `Basic kostet CHF 49.- einmalig pro Party, mit ${photoLimitPhrase('BASIC')} und einem Slideshow-Screen. Es gibt kein Abo, und die Gästezahl spielt für den Preis keine Rolle.`,
+    },
+    {
+      question: 'Können Gäste auch nach der Party noch Fotos hochladen?',
+      answer:
+        'Ja. Solange die Galerie läuft, nimmt derselbe QR-Code weitere Fotos an – im Basic-Paket 7 Tage, mit Premium 30 und mit Enterprise 90 Tage.',
     },
   ],
   ctaTitle: 'Bereit für deine Foto-Wand?',

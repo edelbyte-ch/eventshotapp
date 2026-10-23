@@ -7,17 +7,18 @@ import { buildMetadata } from '@/lib/seo/metadata'
 
 export const metadata: Metadata = buildMetadata({
   path: '/ratgeber/hochzeitsfotos-teilen-ohne-whatsapp',
-  title: 'Hochzeitsfotos teilen ohne WhatsApp-Gruppe',
+  title: 'Hochzeitsfotos sammeln ohne WhatsApp-Gruppe',
   description:
     'Warum WhatsApp Bilder komprimiert, wie ihr Fotos in Originalqualität sammelt und welche Wege sich für Gästefotos wirklich eignen.',
 })
 
 const content: ArticleContent = {
   eyebrow: 'Ratgeber',
-  title: 'Hochzeitsfotos teilen – ohne WhatsApp-Gruppe',
+  title: 'Hochzeitsfotos der Gäste sammeln – ohne WhatsApp-Gruppe',
   lead: 'Legt vor dem Fest einen Sammelort fest, den alle ohne Konto erreichen: Der Gruppenchat ist der bequemste Weg für einen Abend, verkleinert aber jedes Bild beim Versand und lässt genau die Gäste aussen vor, die nicht in der Gruppe sind.',
   path: '/ratgeber/hochzeitsfotos-teilen-ohne-whatsapp',
   datePublished: '2026-08-19',
+  dateModified: '2026-10-24',
   readingMinutes: 6,
   blocks: [
     {
@@ -115,6 +116,11 @@ const content: ArticleContent = {
     },
   ],
   faq: [
+    {
+      question: 'Wie sammeln wir die Fotos der Gäste nach der Hochzeit ein?',
+      answer:
+        'Am einfachsten mit einem einzigen Sammelort, den alle ohne Konto erreichen, etwa einem QR-Code, der im Browser eine Upload-Seite öffnet. Bei EventShot können Gäste darüber auch nach dem Fest noch Fotos nachreichen, solange die Galerie läuft: 7, 30 oder 90 Tage je nach Paket. Schickt den Link dazu am besten mit der Dankeskarte.',
+    },
     {
       question:
         'Können wir Bilder aus dem Gruppenchat nachträglich in Originalqualität bekommen?',

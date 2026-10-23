@@ -9,7 +9,7 @@ import { photoLimitPhrase } from '@/lib/photo-limits'
 
 export const metadata: Metadata = buildMetadata({
   path: '/fotobox-ohne-app',
-  title: 'Fotobox ohne App – QR-Code statt Download',
+  title: 'Fotos sammeln ohne App – Fotobox per QR-Code',
   description:
     'Gäste scannen den QR-Code und laden Fotos direkt im Browser hoch: keine App, kein Konto, kein Login. DSG-konform, Schweizer Hosting.',
 })

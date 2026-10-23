@@ -40,7 +40,7 @@ const VERGLEICH: LinkItem[] = [
 const RATGEBER: LinkItem[] = [
   { title: 'Ratgeber-Übersicht', path: '/ratgeber', note: 'Anleitungen zu Gästefotos sammeln, zeigen und archivieren.' },
   { title: 'Gäste um Fotos bitten', path: '/ratgeber/gaeste-um-fotos-bitten', note: 'Formulierungen für Tischkarte, Ansage und Einladung.' },
-  { title: 'Hochzeitsfotos teilen ohne WhatsApp-Gruppe', path: '/ratgeber/hochzeitsfotos-teilen-ohne-whatsapp' },
+  { title: 'Hochzeitsfotos sammeln ohne WhatsApp-Gruppe', path: '/ratgeber/hochzeitsfotos-teilen-ohne-whatsapp', note: 'Fotos der Gäste in Originalqualität einsammeln, auch nach dem Fest.' },
   { title: 'Datenschutz bei Hochzeitsfotos', path: '/ratgeber/datenschutz-hochzeitsfotos', note: 'Recht am eigenen Bild, Einwilligung, Aufbewahrung (Schweiz).' },
   { title: 'Hochzeitsfotos sichern und archivieren', path: '/ratgeber/hochzeitsfotos-archivieren' },
   { title: 'Braucht man eine Fotobox?', path: '/ratgeber/braucht-man-eine-fotobox', note: 'Entscheidungshilfe, auch gegen das eigene Produkt.' },
