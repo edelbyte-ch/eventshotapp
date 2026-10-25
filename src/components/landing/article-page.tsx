@@ -1,7 +1,9 @@
 import { ArrowRight } from 'lucide-react'
 import Link from 'next/link'
+import { ProductImage } from '@/components/landing/product-image'
 import { Button } from '@/components/ui/button'
-import { articleNode, breadcrumbNode, graph } from '@/lib/seo/schema'
+import { LANDING_IMAGES, type LandingImageKey } from '@/lib/landing-images'
+import { articleNode, breadcrumbNode, graph, SITE } from '@/lib/seo/schema'
 
 export type ArticleBlock =
   | { type: 'paragraph'; text: string }
@@ -26,6 +28,8 @@ export type ArticleContent = {
   related?: { title: string; href: string }[]
   ctaTitle: string
   ctaText: string
+  /** Produktbild unter dem Einstieg; ohne Angabe die Leinwand im Festsaal. */
+  image?: LandingImageKey
 }
 
 /** '2026-08-19' → '19. August 2026', ohne Zeitzonen-Verschiebung. */
@@ -45,6 +49,7 @@ function formatDate(iso: string) {
  */
 export function ArticlePage({ content }: { content: ArticleContent }) {
   const updated = content.dateModified ?? content.datePublished
+  const image = content.image ?? 'leinwand-festsaal'
   const jsonLd = graph(
     breadcrumbNode([
       { name: 'Home', path: '/' },
@@ -57,6 +62,8 @@ export function ArticlePage({ content }: { content: ArticleContent }) {
       path: content.path,
       datePublished: content.datePublished,
       dateModified: content.dateModified,
+      // Das sichtbare Produktbild statt des allgemeinen Vorschaubilds.
+      image: `${SITE.url}${LANDING_IMAGES[image].src}`,
     }),
     content.faq && content.faq.length > 0
       ? {
@@ -112,6 +119,12 @@ export function ArticlePage({ content }: { content: ArticleContent }) {
             <time dateTime={updated}>{formatDate(updated)}</time>
           </p>
         </header>
+
+        <ProductImage
+          image={image}
+          sizes='(min-width: 768px) 720px, 100vw'
+          className='mt-10'
+        />
 
         <div className='mt-12 space-y-6'>
           {content.blocks.map((block, index) => {

@@ -1,7 +1,9 @@
 import { ArrowRight, CheckCircle } from 'lucide-react'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
+import { ProductImage } from '@/components/landing/product-image'
 import { ScrollReveal } from '@/components/ui/motion'
+import type { LandingImageKey } from '@/lib/landing-images'
 
 export type UseCaseFaq = { question: string; answer: string }
 
@@ -20,6 +22,8 @@ export type UseCaseContent = {
   ctaTitle: string
   ctaText: string
   breadcrumb?: { name: string; path: string }
+  /** Produktbild unter dem Einstieg; ohne Angabe die Leinwand im Festsaal. */
+  image?: LandingImageKey
 }
 
 export function UseCasePage({ content }: { content: UseCaseContent }) {
@@ -47,6 +51,14 @@ export function UseCasePage({ content }: { content: UseCaseContent }) {
             </Button>
           </div>
         </div>
+      </ScrollReveal>
+
+      {/* Produktbild – echtes Standbild, lazy unter dem Einstieg */}
+      <ScrollReveal>
+        <ProductImage
+          image={content.image ?? 'leinwand-festsaal'}
+          sizes='(min-width: 1024px) 976px, 100vw'
+        />
       </ScrollReveal>
 
       {/* Ablauf */}

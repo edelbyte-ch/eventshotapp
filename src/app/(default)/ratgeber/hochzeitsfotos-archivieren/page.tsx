@@ -14,6 +14,7 @@ export const metadata: Metadata = buildMetadata({
 })
 
 const content: ArticleContent = {
+  image: 'galerie',
   eyebrow: 'Ratgeber nach dem Fest',
   title: 'Hochzeitsfotos sichern und archivieren',
   lead: 'Zieht alle Bilder in der ersten Woche nach dem Fest an einem Ort zusammen, sichert sie in voller Auflösung auf einem Computer und legt sie danach an zwei getrennten Orten ab – wer diese drei Schritte macht, hat seine Hochzeitsfotos auch in zehn Jahren noch.',

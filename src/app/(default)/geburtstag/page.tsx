@@ -14,6 +14,7 @@ export const metadata: Metadata = buildMetadata({
 })
 
 const content: UseCaseContent = {
+  image: 'leinwand-gruppenfoto',
   eyebrow: 'EventShot für Geburtstage',
   title: 'Live-Slideshow mit Gästefotos für deinen Geburtstag',
   intro:

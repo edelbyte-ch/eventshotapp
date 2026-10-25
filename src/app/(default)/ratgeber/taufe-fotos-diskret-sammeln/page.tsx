@@ -13,6 +13,7 @@ export const metadata: Metadata = buildMetadata({
 })
 
 const content: ArticleContent = {
+  image: 'leinwand-familie',
   eyebrow: 'Ratgeber',
   title: 'Fotos an der Taufe diskret sammeln',
   lead: 'Kurz gesagt: Sammelt die Aufnahmen an einem Ort, der nur den geladenen Gästen offensteht, sagt vorher, wie lange sie dort bleiben – und bittet ausdrücklich darum, nichts öffentlich zu posten. Damit bleibt der Tag eine Erinnerung im Familienkreis.',

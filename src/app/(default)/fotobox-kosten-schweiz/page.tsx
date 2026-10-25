@@ -15,6 +15,7 @@ export const metadata: Metadata = buildMetadata({
 })
 
 const content: UseCaseContent = {
+  image: 'leinwand-gruppenfoto',
   eyebrow: 'Kosten im Vergleich',
   title: 'Was kostet eine Fotobox in der Schweiz?',
   intro:

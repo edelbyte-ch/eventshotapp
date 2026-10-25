@@ -13,6 +13,7 @@ export const metadata: Metadata = buildMetadata({
 })
 
 const content: ArticleContent = {
+  image: 'qr-code-scannen',
   eyebrow: 'Gestaltung',
   title: 'QR-Code-Tischkarten gestalten',
   lead: 'Eine QR-Code-Tischkarte wird gescannt, wenn der Code darauf das auffälligste Element ist und ein einziger Satz darunter erklärt, was mit dem Foto geschieht. Papier, Schrift und Farbe machen die Karte schön – wirksam machen sie diese beiden Dinge.',

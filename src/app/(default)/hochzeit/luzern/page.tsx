@@ -13,6 +13,7 @@ export const metadata: Metadata = buildMetadata({
 })
 
 const content: UseCaseContent = {
+  image: 'leinwand-brautpaar',
   eyebrow: 'Digitale Fotobox für Hochzeiten in Luzern',
   title: 'Digitale Fotobox für eure Hochzeit in Luzern',
   intro:

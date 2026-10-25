@@ -13,6 +13,7 @@ export const metadata: Metadata = buildMetadata({
 })
 
 const content: ArticleContent = {
+  image: 'qr-code-scannen',
   eyebrow: 'Ratgeber',
   title: 'Wie ihr eure Gäste um Fotos bittet',
   lead: 'Sagt in einem einzigen Satz, was ihr euch wünscht, wohin das Bild geht und wie schnell es erledigt ist – diese drei Angaben an der richtigen Stelle entscheiden darüber, ob eure Gäste tatsächlich hochladen oder es nur vorhaben.',

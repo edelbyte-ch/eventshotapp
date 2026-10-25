@@ -14,6 +14,7 @@ export const metadata: Metadata = buildMetadata({
 })
 
 const content: UseCaseContent = {
+  image: 'leinwand-familie',
   eyebrow: 'EventShot für Taufen',
   title: 'Eure Taufe, in Bildern der Gäste.',
   intro:

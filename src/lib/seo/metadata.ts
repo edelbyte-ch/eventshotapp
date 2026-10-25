@@ -1,5 +1,14 @@
 import type { Metadata } from 'next'
+import { ogImagePath } from '@/lib/seo/og-pages'
 import { SITE } from '@/lib/seo/schema'
+
+/**
+ * Markdown-Fassung einer Seite fuer KI-Agenten. Die Dateien erzeugt
+ * scripts/build-markdown.mjs nach `next build` unter public/md/.
+ */
+export function markdownPath(path: string): string {
+  return path === '/' ? '/md/index.md' : `/md${path}.md`
+}
 
 /**
  * Einheitliche Metadata fuer alle indexierbaren Seiten.
@@ -31,7 +40,12 @@ export function buildMetadata(input: {
   type?: 'website' | 'article'
 }): Metadata {
   const url = `${SITE.url}${input.path}`
-  const image = input.ogImage ?? SITE.ogImage
+  // Eigenes Vorschaubild aus src/lib/seo/og-pages.ts, sonst das allgemeine.
+  // Bewusst explizit statt file-based opengraph-image: So stehen og:image und
+  // twitter:image sicher auf demselben Bild.
+  const pageImage = ogImagePath(input.path)
+  const image =
+    input.ogImage ?? (pageImage ? `${SITE.url}${pageImage}` : SITE.ogImage)
   const ogTitle = input.ogTitle ?? input.title
   const ogDescription = input.ogDescription ?? input.description
 
@@ -47,7 +61,10 @@ export function buildMetadata(input: {
   return {
     title: input.absoluteTitle ? { absolute: input.title } : input.title,
     description: input.description,
-    alternates: { canonical: url },
+    alternates: {
+      canonical: url,
+      types: { 'text/markdown': `${SITE.url}${markdownPath(input.path)}` },
+    },
     robots: { index: true, follow: true },
     openGraph: {
       title: ogTitle,

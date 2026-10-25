@@ -14,6 +14,7 @@ export const metadata: Metadata = buildMetadata({
 })
 
 const content: UseCaseContent = {
+  image: 'galerie',
   eyebrow: 'EventShot als digitales Gästebuch',
   title: 'Das digitale Gästebuch für eure Hochzeit',
   intro:

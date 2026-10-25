@@ -13,6 +13,7 @@ export const metadata: Metadata = buildMetadata({
 })
 
 const content: UseCaseContent = {
+  image: 'leinwand-familie',
   eyebrow: 'EventShot für Konfirmationen',
   title: 'Eure Konfirmation, festgehalten von allen.',
   intro:

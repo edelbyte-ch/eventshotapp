@@ -13,6 +13,7 @@ export const metadata: Metadata = buildMetadata({
 })
 
 const content: UseCaseContent = {
+  image: 'leinwand-familie',
   eyebrow: 'EventShot für Familienfeste',
   title: 'Euer Familienfest, aus allen Blickwinkeln.',
   intro:

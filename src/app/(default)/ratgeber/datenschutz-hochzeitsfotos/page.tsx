@@ -14,6 +14,7 @@ export const metadata: Metadata = buildMetadata({
 })
 
 const content: ArticleContent = {
+  image: 'galerie',
   eyebrow: 'Ratgeber Datenschutz',
   title: 'Gästefotos und Datenschutz an der Hochzeit',
   lead: 'Fotos, die eure Gäste am Fest machen und untereinander teilen, sind in der Schweiz zulässig, solange die Abgebildeten davon wissen und niemand gegen seinen Willen im Bild landet – heikel wird es erst, wenn die Bilder den Kreis der Feiernden verlassen oder ohne Enddatum liegen bleiben.',

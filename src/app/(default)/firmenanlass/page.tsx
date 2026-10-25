@@ -13,6 +13,7 @@ export const metadata: Metadata = buildMetadata({
 })
 
 const content: UseCaseContent = {
+  image: 'leinwand-gruppenfoto',
   eyebrow: 'EventShot für kleine Firmenanlässe',
   title: 'Team-Events, die alle teilen.',
   intro:

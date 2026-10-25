@@ -15,6 +15,7 @@ export const metadata: Metadata = buildMetadata({
 })
 
 const content: UseCaseContent = {
+  image: 'qr-code-scannen',
   eyebrow: 'EventShot ohne App-Download',
   title: 'Fotos sammeln – ohne App und ohne Konto',
   intro:

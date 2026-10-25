@@ -13,6 +13,7 @@ export const metadata: Metadata = buildMetadata({
 })
 
 const content: ArticleContent = {
+  image: 'leinwand-gruppenfoto',
   eyebrow: 'Ratgeber',
   title: 'Fotos an der Geburtstagsparty sammeln',
   lead: 'Kurz gesagt: Lege vor der Party einen einzigen Ort fest, an dem alle Bilder landen, und zeige ihn deinen Gästen am Abend selbst – wer erst am Tag danach nachfragt, bekommt nur einen Bruchteil der Fotos.',

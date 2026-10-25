@@ -14,6 +14,7 @@ export const metadata: Metadata = buildMetadata({
 })
 
 const content: UseCaseContent = {
+  image: 'foto-hochladen',
   eyebrow: 'EventShot erklärt',
   title: 'Was ist eine digitale Fotobox?',
   intro:

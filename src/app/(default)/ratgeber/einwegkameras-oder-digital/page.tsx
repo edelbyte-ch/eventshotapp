@@ -13,6 +13,7 @@ export const metadata: Metadata = buildMetadata({
 })
 
 const content: ArticleContent = {
+  image: 'foto-hochladen',
   eyebrow: 'Ratgeber',
   title: 'Einwegkameras oder digitale Fotowand?',
   lead: 'Wollt ihr alle Bilder des Abends behalten und nicht nur einen Zufallsausschnitt, ist die digitale Variante die verlässlichere – Einwegkameras sind dafür das schönere Deko- und Überraschungselement. Wer beides mag, muss sich nicht entscheiden: Ein paar Kameras auf die Tische, den Rest über den QR-Code.',

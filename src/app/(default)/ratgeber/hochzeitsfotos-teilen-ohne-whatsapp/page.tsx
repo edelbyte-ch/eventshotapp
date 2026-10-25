@@ -13,6 +13,7 @@ export const metadata: Metadata = buildMetadata({
 })
 
 const content: ArticleContent = {
+  image: 'foto-hochladen',
   eyebrow: 'Ratgeber',
   title: 'Hochzeitsfotos der Gäste sammeln – ohne WhatsApp-Gruppe',
   lead: 'Legt vor dem Fest einen Sammelort fest, den alle ohne Konto erreichen: Der Gruppenchat ist der bequemste Weg für einen Abend, verkleinert aber jedes Bild beim Versand und lässt genau die Gäste aussen vor, die nicht in der Gruppe sind.',

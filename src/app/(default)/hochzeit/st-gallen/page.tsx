@@ -14,6 +14,7 @@ export const metadata: Metadata = buildMetadata({
 });
 
 const content: UseCaseContent = {
+  image: "leinwand-brautpaar",
   eyebrow: "Digitale Fotobox für Hochzeiten in der Ostschweiz",
   title: "Digitale Fotobox für eure Hochzeit in St. Gallen und der Ostschweiz",
   intro:

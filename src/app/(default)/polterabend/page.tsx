@@ -14,6 +14,7 @@ export const metadata: Metadata = buildMetadata({
 })
 
 const content: UseCaseContent = {
+  image: 'leinwand-gruppenfoto',
   eyebrow: 'EventShot für Polterabende',
   title: 'Euer Polterabend, aus allen Perspektiven.',
   intro:
