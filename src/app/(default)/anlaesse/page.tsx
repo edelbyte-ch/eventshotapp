@@ -70,6 +70,11 @@ const content: HubContent = {
         'Du bist noch am Abwägen? Diese Seiten ordnen die digitale Fotowand gegenüber der klassischen Mietfotobox ein – inklusive der Fälle, in denen eine Mietbox die bessere Wahl bleibt.',
       entries: [
         {
+          title: 'Anbieter im Vergleich',
+          href: '/anbieter-vergleich',
+          copy: 'Elf digitale Fotowände mit Preisen, Videos, Speicherdauer und Datenstandort, ehrlich gegenübergestellt.',
+        },
+        {
           title: 'Fotobox-Alternative',
           href: '/fotobox-alternative',
           copy: 'Mietfotobox oder digitale Fotowand? Kosten, Aufbau, Platz und Gästezahl im Vergleich.',

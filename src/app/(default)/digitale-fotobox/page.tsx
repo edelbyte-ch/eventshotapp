@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import Link from 'next/link'
 import {
   type UseCaseContent,
   UseCasePage,
@@ -71,5 +72,22 @@ const content: UseCaseContent = {
 }
 
 export default function DigitaleFotoboxPage() {
-  return <UseCasePage content={content} />
+  return (
+    <>
+      <UseCasePage content={content} />
+      <div className='container max-w-5xl pb-16'>
+        <div className='rounded-2xl border border-border bg-muted/50 p-6 text-sm text-muted-foreground'>
+          Digitale Fotoboxen gibt es von mehreren Anbietern. Preise, Videos,
+          Speicherdauer und Datenstandort stehen im{' '}
+          <Link
+            href='/anbieter-vergleich'
+            className='font-medium text-primary hover:underline'
+          >
+            Anbieter-Vergleich
+          </Link>
+          .
+        </div>
+      </div>
+    </>
+  )
 }

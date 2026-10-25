@@ -63,6 +63,26 @@ const COMPARISON: { label: string; values: [string, string, string] }[] = [
   },
 ]
 
+/**
+ * Ein Vergleichswert: «–» als dezentes Icon mit Text «nicht enthalten»,
+ * kurze Werte ohne Umbruch (z. B. «CHF 149.-», «90 Tage»).
+ */
+function ComparisonValue({ value }: { value: string }) {
+  if (value === '–') {
+    return (
+      <span className='inline-flex items-center gap-1.5 font-normal text-muted-foreground'>
+        <Minus className='size-4 shrink-0' aria-hidden='true' />
+        nicht enthalten
+      </span>
+    )
+  }
+  return (
+    <span className={value.length <= 10 ? 'whitespace-nowrap' : undefined}>
+      {value}
+    </span>
+  )
+}
+
 const IMMER_ENTHALTEN = [
   'Foto-Upload per QR-Code, ganz ohne App',
   'Beliebig viele Gäste ohne Aufpreis',
@@ -231,8 +251,61 @@ export default async function PreisePage() {
           <h2 className='text-2xl md:text-3xl font-bold'>
             Pakete im Vergleich
           </h2>
-          <div className='overflow-x-auto rounded-2xl border border-border'>
-            <table className='w-full min-w-[36rem] border-collapse text-sm'>
+          {/* Eine Datenquelle, zwei Darstellungen: bis md eine Karte pro
+              Paket, ab md die Tabelle in fester Breite ohne Scrollen. Die
+              Karten tragen data-md-skip, damit die Markdown-Fassung die
+              Angaben nur einmal (als Tabelle) enthaelt. */}
+          <ul data-md-skip className='grid gap-4 md:hidden'>
+            {pricingPlans.map((plan, index) => (
+              <li
+                key={plan.name}
+                className={`relative rounded-2xl border bg-card p-6 ${
+                  plan.highlighted
+                    ? 'border-primary shadow-lg'
+                    : 'border-border shadow-sm'
+                }`}
+              >
+                {plan.highlighted && (
+                  <span className='absolute top-0 left-1/2 -translate-x-1/2 rounded-b-lg bg-primary px-4 py-1 text-sm font-medium text-primary-foreground'>
+                    Meistgewählt
+                  </span>
+                )}
+                <div className={plan.highlighted ? 'pt-6' : ''}>
+                  <h3 className='text-xl font-bold'>{plan.name}</h3>
+                  <p className='mt-2'>
+                    <span className='text-3xl font-bold'>{plan.price}</span>{' '}
+                    <span className='text-sm text-muted-foreground'>
+                      {plan.duration}
+                    </span>
+                  </p>
+                </div>
+                <dl className='mt-5 grid grid-cols-[minmax(0,9rem)_1fr] gap-x-4 gap-y-3 border-t border-border pt-5 text-sm'>
+                  {COMPARISON.filter((row) => row.label !== 'Preis pro Event').map(
+                    (row) => [
+                      <dt
+                        key={`${row.label}-dt`}
+                        className='text-muted-foreground'
+                      >
+                        {row.label}
+                      </dt>,
+                      <dd key={`${row.label}-dd`} className='font-medium'>
+                        <ComparisonValue value={row.values[index]} />
+                      </dd>,
+                    ],
+                  )}
+                </dl>
+              </li>
+            ))}
+          </ul>
+
+          <div className='hidden overflow-hidden rounded-2xl border border-border shadow-sm md:block'>
+            <table className='w-full table-fixed border-collapse text-sm'>
+              <colgroup>
+                <col className='w-[30%]' />
+                {pricingPlans.map((plan) => (
+                  <col key={plan.name} />
+                ))}
+              </colgroup>
               <thead>
                 <tr className='bg-muted/50 text-left'>
                   <th scope='col' className='px-4 py-3 font-semibold'>
@@ -242,9 +315,16 @@ export default async function PreisePage() {
                     <th
                       key={plan.name}
                       scope='col'
-                      className='px-4 py-3 font-semibold'
+                      className={`px-4 py-3 font-semibold ${
+                        plan.highlighted ? 'bg-primary/10' : ''
+                      }`}
                     >
                       {plan.name}
+                      {plan.highlighted && (
+                        <span className='ml-2 whitespace-nowrap text-xs font-medium text-primary'>
+                          Meistgewählt
+                        </span>
+                      )}
                     </th>
                   ))}
                 </tr>
@@ -261,16 +341,11 @@ export default async function PreisePage() {
                     {row.values.map((value, index) => (
                       <td
                         key={`${row.label}-${pricingPlans[index].name}`}
-                        className='px-4 py-3'
+                        className={`px-4 py-3 ${
+                          pricingPlans[index].highlighted ? 'bg-primary/5' : ''
+                        }`}
                       >
-                        {value === '–' ? (
-                          <Minus
-                            className='size-4 text-muted-foreground'
-                            aria-label='nicht enthalten'
-                          />
-                        ) : (
-                          value
-                        )}
+                        <ComparisonValue value={value} />
                       </td>
                     ))}
                   </tr>

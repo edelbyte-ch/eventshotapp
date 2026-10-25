@@ -61,6 +61,10 @@ function toMarkdown(mainHtml) {
   const html = mainHtml
     // Fixierter Seitenkopf mit Logo und Menue (siehe landing/header.tsx).
     .replace(/<header class="fixed[\s\S]*?<\/header>/, '')
+    // Mobile Kartenansicht einer Tabelle (data-md-skip): Dieselben Angaben
+    // stehen in der Tabelle, sonst kaemen sie doppelt ins Markdown. Die
+    // Karten-Liste darf deshalb keine verschachtelte <ul> enthalten.
+    .replace(/<ul data-md-skip[^>]*>[\s\S]*?<\/ul>/g, '')
     // FAQ-Aufklapper: Frage als Zwischentitel, ohne das «+»-Symbol.
     .replace(
       /<summary[^>]*>([\s\S]*?)<span[^>]*>\+<\/span>\s*<\/summary>/g,

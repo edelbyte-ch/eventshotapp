@@ -33,7 +33,7 @@ export type ArticleContent = {
 }
 
 /** '2026-08-19' → '19. August 2026', ohne Zeitzonen-Verschiebung. */
-function formatDate(iso: string) {
+export function formatDate(iso: string) {
   return new Intl.DateTimeFormat('de-CH', {
     day: 'numeric',
     month: 'long',

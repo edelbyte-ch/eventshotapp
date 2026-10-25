@@ -123,7 +123,7 @@ export function KundenUebersicht({
             <>
             {/* Mobil Karten statt Tabelle: quer scrollen liesse ausgerechnet
                 die Zahlen unsichtbar rechts liegen, um die es hier geht. */}
-            <ul className="divide-y sm:hidden">
+            <ul className="divide-y lg:hidden">
               {kunden.map((k) => (
                 <li key={k.tenantId} className="space-y-3 py-4">
                   <div>
@@ -167,8 +167,8 @@ export function KundenUebersicht({
               ))}
             </ul>
 
-            <div className="hidden overflow-x-auto sm:block">
-              <table className="w-full min-w-3xl text-sm">
+            <div className="hidden lg:block">
+              <table className="w-full text-sm">
                 <thead>
                   <tr className="border-b text-left text-xs uppercase tracking-wide text-muted-foreground">
                     <th className="py-2 pr-4 font-medium">Kunde</th>

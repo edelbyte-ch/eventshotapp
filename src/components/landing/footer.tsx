@@ -48,6 +48,7 @@ const REGIONEN = [
 ]
 
 const VERGLEICH = [
+  { label: 'Anbieter-Vergleich', href: '/anbieter-vergleich' },
   { label: 'Fotobox-Alternative', href: '/fotobox-alternative' },
   { label: 'Fotobox Kosten Schweiz', href: '/fotobox-kosten-schweiz' },
   { label: 'Fotobox ohne App', href: '/fotobox-ohne-app' },

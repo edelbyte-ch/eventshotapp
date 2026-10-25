@@ -24,6 +24,10 @@ export const OG_PAGES: Record<string, OgPage> = {
     eyebrow: 'Gästefotos per QR-Code, ohne App',
   },
   '/agb': { title: 'Allgemeine Geschäftsbedingungen', eyebrow: RECHTLICHES },
+  '/anbieter-vergleich': {
+    title: 'Digitale Fotowand: Anbieter im Vergleich',
+    eyebrow: VERGLEICH,
+  },
   '/anlaesse': { title: 'Live-Fotowand für jede Feier', eyebrow: 'Anlässe' },
   '/datenschutz': { title: 'Datenschutzerklärung', eyebrow: RECHTLICHES },
   '/demo': { title: 'Demo-Video ansehen – ohne Registrierung', eyebrow: 'Demo' },

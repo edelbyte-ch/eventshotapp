@@ -27,6 +27,7 @@ const ANLAESSE: LinkItem[] = [
 ]
 
 const VERGLEICH: LinkItem[] = [
+  { title: 'Digitale Fotowand: Anbieter im Vergleich', path: '/anbieter-vergleich', note: 'elf Anbieter für Gästefotos per QR-Code mit Preisen, Videos, Speicherdauer und Datenstandort, mit Quellen; inklusive der Fälle, in denen andere Anbieter besser passen.' },
   { title: 'Fotobox-Alternative', path: '/fotobox-alternative', note: 'Mietfotobox oder digitale Fotowand: Kosten, Aufbau, Platz und Gästezahl.' },
   { title: 'Fotobox Kosten Schweiz', path: '/fotobox-kosten-schweiz', note: 'was Mietfotoboxen in der Schweiz kosten.' },
   { title: 'Fotobox ohne App', path: '/fotobox-ohne-app', note: 'QR-Code statt Download, kein Konto nötig.' },

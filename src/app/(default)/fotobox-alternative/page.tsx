@@ -80,6 +80,15 @@ export default function FotoboxAlternativePage() {
           <ul className='space-y-1'>
             <li>
               <Link
+                href='/anbieter-vergleich'
+                className='font-medium text-primary hover:underline'
+              >
+                Anbieter für digitale Fotowände im Vergleich
+              </Link>{' '}
+              – Preise, Videos, Speicherdauer und Datenstandort
+            </li>
+            <li>
+              <Link
                 href='/fotobox-kosten-schweiz'
                 className='font-medium text-primary hover:underline'
               >

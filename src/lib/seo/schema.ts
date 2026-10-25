@@ -58,7 +58,7 @@ export function organizationNode(): JsonObject {
       // verlinkt sein – der Footer verlinkt das EventShot-Profil.
       'https://www.instagram.com/eventshot.ch/',
       'https://www.instagram.com/edelbyte.ch/',
-      'https://www.linkedin.com/company/edelbyte',
+      'https://www.linkedin.com/company/edelbyte-it-mit-leidenschaft/',
     ],
     contactPoint: {
       '@type': 'ContactPoint',
@@ -237,7 +237,8 @@ export function itemListNode(
       '@type': 'ListItem',
       position: index + 1,
       name: item.name,
-      url: `${SITE.url}${item.path}`,
+      // Externe Ziele (z. B. Anbieter im Vergleich) als volle URL uebergeben.
+      url: item.path.startsWith('http') ? item.path : `${SITE.url}${item.path}`,
     })),
   }
 }

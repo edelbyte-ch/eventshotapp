@@ -20,6 +20,8 @@ const DEMO_UPDATED = new Date('2026-09-02')
  * 2026-10-24).
  */
 const IMAGES_UPDATED = new Date('2026-10-25')
+/** Anbieter-Vergleich neu; /anlaesse und /ratgeber verlinken darauf. */
+const COMPARISON_UPDATED = new Date('2026-10-25')
 
 type Entry = {
   path: string
@@ -31,7 +33,8 @@ type Entry = {
 const ENTRIES: Entry[] = [
   { path: '', priority: 1.0, changeFrequency: 'weekly', lastModified: DEMO_UPDATED },
   { path: '/agb', priority: 0.3, changeFrequency: 'yearly', lastModified: LEGAL_UPDATED },
-  { path: '/anlaesse', priority: 0.9, changeFrequency: 'monthly', lastModified: CONTENT_UPDATED },
+  { path: '/anbieter-vergleich', priority: 0.8, changeFrequency: 'monthly', lastModified: COMPARISON_UPDATED },
+  { path: '/anlaesse', priority: 0.9, changeFrequency: 'monthly', lastModified: COMPARISON_UPDATED },
   { path: '/datenschutz', priority: 0.3, changeFrequency: 'yearly', lastModified: LEGAL_UPDATED },
   { path: '/demo', priority: 0.7, changeFrequency: 'monthly', lastModified: DEMO_UPDATED },
   { path: '/digitale-fotobox', priority: 0.7, changeFrequency: 'monthly', lastModified: IMAGES_UPDATED },
@@ -55,7 +58,7 @@ const ENTRIES: Entry[] = [
   { path: '/preise', priority: 0.9, changeFrequency: 'monthly', lastModified: CONTENT_UPDATED },
   { path: '/qr-code-fotos-hochzeit', priority: 0.7, changeFrequency: 'monthly', lastModified: CONTENT_UPDATED },
   { path: '/qr-code-vorlagen', priority: 0.7, changeFrequency: 'monthly', lastModified: CONTENT_UPDATED },
-  { path: '/ratgeber', priority: 0.8, changeFrequency: 'weekly', lastModified: CONTENT_UPDATED },
+  { path: '/ratgeber', priority: 0.8, changeFrequency: 'weekly', lastModified: COMPARISON_UPDATED },
   { path: '/taufe', priority: 0.8, changeFrequency: 'monthly', lastModified: IMAGES_UPDATED },
   { path: '/ueber-uns', priority: 0.6, changeFrequency: 'yearly', lastModified: CONTENT_UPDATED },
   { path: '/hochzeit/aarau', priority: 0.7, changeFrequency: 'monthly', lastModified: IMAGES_UPDATED },

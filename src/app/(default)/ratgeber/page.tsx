@@ -58,6 +58,11 @@ const content: HubContent = {
           copy: 'Wann sich eine Mietfotobox lohnt – und wann ihr ganz darauf verzichten könnt.',
         },
         {
+          title: 'Digitale Fotowand: Anbieter im Vergleich',
+          href: '/anbieter-vergleich',
+          copy: 'Elf Dienste mit Preisen, Videos, Speicherdauer und Datenstandort, inklusive der Fälle, in denen ein anderer besser passt.',
+        },
+        {
           title: 'Einwegkameras oder digitale Fotowand?',
           href: '/ratgeber/einwegkameras-oder-digital',
           copy: 'Der Klassiker im Vergleich: Kosten, Entwicklung, Ausschuss und Wartezeit.',

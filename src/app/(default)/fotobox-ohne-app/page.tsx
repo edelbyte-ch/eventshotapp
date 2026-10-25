@@ -91,6 +91,13 @@ export default function FotoboxOhneAppPage() {
           >
             Hochzeits-Fotowand mit Live-Slideshow
           </Link>
+          . Welche Anbieter ohne App funktionieren und was sie kosten, steht im{' '}
+          <Link
+            href='/anbieter-vergleich'
+            className='font-medium text-primary hover:underline'
+          >
+            Anbieter-Vergleich
+          </Link>
           .
         </div>
       </div>

@@ -286,8 +286,26 @@ export default function QrCodeVorlagenPage() {
               grosser Code stört niemanden, ein zu kleiner kostet Uploads.
             </p>
           </div>
-          <div className='overflow-x-auto rounded-2xl border border-border'>
-            <table className='w-full min-w-[34rem] text-left text-sm'>
+          {/* Bis md Karten, ab md Tabelle – ohne horizontales Scrollen.
+              data-md-skip: die Markdown-Fassung nimmt nur die Tabelle. */}
+          <ul data-md-skip className='grid gap-3 md:hidden'>
+            {groessen.map((row) => (
+              <li
+                key={row.ort}
+                className='rounded-2xl border border-border bg-card p-5 text-sm'
+              >
+                <h3 className='font-semibold'>{row.ort}</h3>
+                <dl className='mt-3 grid grid-cols-[7rem_1fr] gap-x-3 gap-y-1.5'>
+                  <dt className='text-muted-foreground'>Leseabstand</dt>
+                  <dd>{row.abstand}</dd>
+                  <dt className='text-muted-foreground'>Kantenlänge</dt>
+                  <dd className='font-medium'>{row.mass}</dd>
+                </dl>
+              </li>
+            ))}
+          </ul>
+          <div className='hidden overflow-hidden rounded-2xl border border-border md:block'>
+            <table className='w-full text-left text-sm'>
               <thead className='bg-muted/50 text-muted-foreground'>
                 <tr>
                   <th className='px-5 py-3 font-semibold'>Wo der Code steht</th>

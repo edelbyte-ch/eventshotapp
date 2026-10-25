@@ -72,7 +72,9 @@ export function PlanPrice({
         </s>
         <span aria-hidden> · </span>
         <span className='sr-only'>, </span>
-        <span className='whitespace-nowrap'>
+        {/* inline-block statt nowrap: haelt die Wendung zusammen, bricht in
+            schmalen Karten (Tablet, drei Spalten) aber um statt ueberzustehen. */}
+        <span className='inline-block'>
           für Events im {promotionMonthsLabel(promotion)}
         </span>
       </p>
