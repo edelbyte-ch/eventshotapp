@@ -19,7 +19,7 @@ export function Panel({
   children: ReactNode
 }) {
   return (
-    <section className='rounded-2xl border border-border/60 bg-card/60 p-5 sm:p-6'>
+    <section className='rounded-2xl border border-border/60 bg-card/60 p-4 sm:p-6'>
       <div className='mb-4 flex items-start justify-between gap-3'>
         <div className='space-y-1'>
           <h2 className='flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.16em] text-muted-foreground'>

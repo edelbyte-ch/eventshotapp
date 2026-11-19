@@ -42,7 +42,7 @@ export function EventShare({ eventId }: { eventId: string }) {
             <p className='text-xs text-muted-foreground'>{z.text}</p>
           </div>
           <div className='flex shrink-0 gap-2'>
-            <Button asChild variant='outline' size='sm' className='h-9 flex-1'>
+            <Button asChild variant='ghost' size='sm' className='h-9 flex-1 text-muted-foreground hover:text-foreground'>
               <Link href={z.pfad} target='_blank'>
                 <z.icon className='size-3.5' />
                 Öffnen
@@ -50,6 +50,7 @@ export function EventShare({ eventId }: { eventId: string }) {
             </Button>
             <Button
               size='sm'
+              variant='secondary'
               className='h-9 flex-1'
               onClick={() => kopieren(z.pfad, `Link zur ${z.titel}`)}
             >

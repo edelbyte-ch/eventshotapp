@@ -1,4 +1,4 @@
-import { ArrowRight, MonitorPlay, ScanLine } from 'lucide-react'
+import { ArrowRight, ScanLine } from 'lucide-react'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
@@ -21,25 +21,23 @@ export function DemoSection({ demo }: { demo: DemoEventInfo }) {
   const pct = Math.min(100, (demo.used / limit) * 100)
 
   return (
-    <Card className='rounded-3xl border border-primary/20 bg-linear-to-br from-primary/10 via-card/50 to-card/50 shadow-xl backdrop-blur-sm'>
-      <CardContent className='flex flex-col gap-6 p-6 sm:flex-row sm:items-center sm:gap-8 sm:p-8'>
-        <div className='min-w-0 flex-1 space-y-3'>
-          <span className='inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/10 px-3 py-1 text-xs font-medium text-primary'>
-            Gratis zum Ausprobieren
-          </span>
-
-          <h2 className='text-2xl font-bold'>Dein Demo-Event</h2>
-
-          <p className='max-w-md text-sm leading-relaxed text-muted-foreground'>
+    <Card className='rounded-2xl border border-primary/25 bg-linear-to-br from-primary/10 via-card/60 to-card/60 shadow-none'>
+      <CardContent className='flex flex-col gap-5 p-5 sm:flex-row sm:items-center sm:gap-8 sm:p-6'>
+        <div className='min-w-0 flex-1 space-y-2'>
+          <p className='text-[11px] font-semibold uppercase tracking-[0.16em] text-primary'>
+            Zum Ausprobieren
+          </p>
+          <h2 className='text-xl font-bold'>Dein Demo-Event</h2>
+          <p className='max-w-lg text-sm leading-relaxed text-muted-foreground'>
             {full ? (
               <>
-                Alle {limit} Demo-Fotos sind aufgebraucht. Für eine
-                echte Feier legst du ein eigenes Event an.
+                Alle {limit} Demo-Fotos sind aufgebraucht. Für eine echte Feier
+                legst du ein eigenes Event an.
               </>
             ) : (
               <>
-                Voller Funktionsumfang, begrenzt auf {limit} Fotos.
-                QR-Code scannen, hochladen, Slideshow öffnen — genau wie am Fest.
+                Voller Funktionsumfang, begrenzt auf {limit} Fotos. QR-Code
+                scannen, hochladen, Slideshow öffnen — genau wie am Fest.
               </>
             )}
           </p>
@@ -52,30 +50,26 @@ export function DemoSection({ demo }: { demo: DemoEventInfo }) {
                 style={{ width: `${pct}%` }}
               />
             </div>
-            <p className='text-xs text-muted-foreground tabular-nums'>
+            <p className='text-xs tabular-nums text-muted-foreground'>
               {demo.used} von {limit} Fotos
               {!full && ` · noch ${left} frei`}
             </p>
           </div>
         </div>
 
-        <div className='flex shrink-0 flex-col gap-2 sm:w-56'>
+        {/* Zwei Wege: verwalten oder als Gast erleben. Die Slideshow steht
+            im Demo-Event selbst oben rechts. */}
+        <div className='flex shrink-0 flex-col gap-2 sm:w-52'>
           <Button asChild className='h-10 w-full font-semibold'>
             <Link href={`/tenant/event/${demo.id}`}>
               Demo öffnen
-              <ArrowRight className='h-4 w-4' />
+              <ArrowRight className='size-4' />
             </Link>
           </Button>
-          <Button asChild variant='outline' className='h-10 w-full text-xs'>
+          <Button asChild variant='outline' className='h-10 w-full'>
             <Link href={`/event/${demo.id}`} target='_blank'>
-              <ScanLine className='h-3.5 w-3.5' />
+              <ScanLine className='size-4' />
               Als Gast testen
-            </Link>
-          </Button>
-          <Button asChild variant='ghost' className='h-10 w-full text-xs'>
-            <Link href={`/tenant/event/${demo.id}/slideshow`} target='_blank'>
-              <MonitorPlay className='h-3.5 w-3.5' />
-              Slideshow öffnen
             </Link>
           </Button>
         </div>

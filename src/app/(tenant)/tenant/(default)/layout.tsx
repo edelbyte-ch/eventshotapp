@@ -5,7 +5,7 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
 }
 
-import { Footer } from '@/components/landing/footer'
+import { AppFooter } from '@/components/tenant/app-footer'
 import Header from '@/components/tenant/header'
 import { Suspense, type ReactNode } from 'react'
 
@@ -20,7 +20,7 @@ export default async function AdminLayout({
         <Header />
       </Suspense>
       <main className="flex-1 flex flex-col">{children}</main>
-      <Footer />
+      <AppFooter />
     </div>
   )
 }

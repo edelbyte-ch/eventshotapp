@@ -61,7 +61,7 @@ export default function ActiveScreens({ eventId }: { eventId: string }) {
       action={
         <div className='flex items-center gap-1'>
           <span className='rounded-full bg-primary/10 px-2 py-0.5 text-[11px] font-semibold tabular-nums text-primary'>
-            {belegt} / {limit === null ? '∞' : limit}
+            {limit === null ? `${belegt} aktiv` : `${belegt} von ${limit}`}
           </span>
           <Button
             variant='ghost'
@@ -82,7 +82,7 @@ export default function ActiveScreens({ eventId }: { eventId: string }) {
           Wird geladen …
         </p>
       ) : screens.length === 0 ? (
-        <p className='py-4 text-center text-sm text-muted-foreground'>
+        <p className='rounded-xl border border-dashed border-border/70 px-4 py-5 text-center text-sm text-muted-foreground'>
           Gerade läuft die Slideshow auf keinem Bildschirm.
         </p>
       ) : (
