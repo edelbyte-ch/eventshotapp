@@ -77,7 +77,7 @@ export async function deletePhoto({
     },
   })
 
-  revalidatePath(`/tenant/event/${eventId}`)
+  revalidatePath(`/tenant/event/${eventId}`, 'layout')
   revalidatePath(`/event/${eventId}`)
 
   return { success: true }

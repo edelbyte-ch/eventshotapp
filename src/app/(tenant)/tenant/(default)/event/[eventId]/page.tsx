@@ -1,125 +1,133 @@
-import { getEventPhotos } from '@/actions/get-event-photos'
-import InteractiveGallery from '@/components/tenant/event/interactive-gallery'
-import PhotoUploadPresigned from '@/components/event/photo-upload-presigned'
-import { PhotoQuota } from '@/components/tenant/event/photo-quota'
-import QRCodeGenerator from '@/components/tenant/event/qr-code-generator'
-import ActiveScreens from '@/components/tenant/event/active-screens'
-import SlideshowSettings from '@/components/tenant/event/slideshow-settings'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { requireOwnedEventPage } from '@/lib/auth-guard'
-import { pricingPlans } from '@/lib/constants'
-import { COUNTED_PHOTOS } from '@/lib/photo-limits'
+import { ScanLine } from 'lucide-react'
 import { Suspense } from 'react'
+import ActiveScreens from '@/components/tenant/event/active-screens'
+import { EventMetaForm } from '@/components/tenant/event/event-meta-form'
+import { EventShare } from '@/components/tenant/event/event-share'
+import { Panel } from '@/components/tenant/event/panel'
+import QRCodeGenerator from '@/components/tenant/event/qr-code-generator'
+import { requireOwnedEventPage } from '@/lib/auth-guard'
+import { eventDay, formatEventDate } from '@/lib/event-state'
+import { COUNTED_PHOTOS, formatPhotoCount } from '@/lib/photo-limits'
+import { computeGalleryDeleteAt, GALLERY_RETENTION_LABEL } from '@/lib/retention'
 
-export default async function Page({
+export default function EventOverviewPage({
   params,
 }: {
   params: Promise<{ eventId: string }>
 }) {
   return (
-    <Suspense>
-      <PageContent params={params} />
+    <Suspense fallback={<OverviewSkeleton />}>
+      <Overview params={params} />
     </Suspense>
   )
 }
 
-const PageContent = async ({
-  params,
-}: {
-  params: Promise<{ eventId: string }>
-}) => {
+async function Overview({ params }: { params: Promise<{ eventId: string }> }) {
   const { eventId } = await params
-
-  // Vorher wurde hier nur geprueft, DASS jemand angemeldet ist — das Event
-  // dann per findUnique ohne jeden Tenant-Bezug geladen. Jedes selbst
-  // angelegte Gratis-Konto oeffnete damit die Verwaltung einer fremden
-  // Feier: Fotos, QR-Code, Slideshow-Einstellungen, und ueber die
-  // eingebettete Galerie mit admin={true} auch den Loeschknopf.
+  // Vorher wurde hier nur geprueft, DASS jemand angemeldet ist. Jedes
+  // Gratis-Konto oeffnete damit die Verwaltung einer fremden Feier.
   const event = await requireOwnedEventPage(eventId, {
     id: true,
     name: true,
-    isActive: true,
     plan: true,
-    isDemo: true,
+    date: true,
+    location: true,
+    description: true,
     uploadLimit: true,
     _count: { select: { photos: { where: COUNTED_PHOTOS } } },
   })
-  const kontingent = {
-    used: event._count.photos,
-    limit: event.uploadLimit,
-    isDemo: event.isDemo,
-  }
 
-  // Fetch photos with presigned URLs
-  const photos = await getEventPhotos(eventId)
+  const used = event._count.photos
+  const limit = event.uploadLimit
+  const frei = typeof limit === 'number' ? Math.max(0, limit - used) : null
+  const loeschtAm = computeGalleryDeleteAt(event.plan, event.date)
 
   return (
-    <main className='container mx-auto py-8 px-4 md:px-6'>
-      <div className='mb-6 space-y-3'>
-        <h1 className='text-2xl font-bold'>
-          Event: <span className='text-primary'>{event.name}</span>
-        </h1>
-        <PhotoQuota
-          used={kontingent.used}
-          limit={kontingent.limit}
-          planName={
-            pricingPlans.find((p) => p.plan === event.plan)?.name ?? event.plan
-          }
-          isDemo={event.isDemo}
+    <div className='space-y-6'>
+      {/* Kennzahlen als schmale Leiste: die Fotozahl fuehrt, weil sie die
+          einzige ist, nach der jemand fragt. */}
+      <div className='flex flex-wrap items-end gap-x-10 gap-y-4 rounded-2xl border border-border/60 bg-card/60 px-6 py-5'>
+        <Kennzahl gross wert={formatPhotoCount(used)} label='Fotos' />
+        {frei !== null && (
+          <Kennzahl
+            wert={formatPhotoCount(frei)}
+            label={`frei von ${formatPhotoCount(limit as number)}`}
+            warnung={frei === 0}
+          />
+        )}
+        <Kennzahl
+          wert={GALLERY_RETENTION_LABEL[event.plan] ?? '–'}
+          label={`Galerie bis ${formatEventDate(loeschtAm)}`}
         />
       </div>
 
-      <Tabs defaultValue='photos' className='w-full'>
-        <TabsList className='grid grid-cols-4 w-full'>
-          <TabsTrigger value='photos'>Fotos</TabsTrigger>
-          <TabsTrigger value='upload'>Hochladen</TabsTrigger>
-          <TabsTrigger value='qrcode'>QR-Code</TabsTrigger>
-          <TabsTrigger value='settings'>Einstellungen</TabsTrigger>
-        </TabsList>
+      <div className='grid grid-cols-1 gap-5 lg:grid-cols-[minmax(0,1fr)_320px]'>
+        <div className='order-2 space-y-5 lg:order-1'>
+          <Panel title='Teilen'>
+            <EventShare eventId={event.id} />
+          </Panel>
 
-        <div className='mt-6'>
-          {/* ---------------- Fotos ---------------- */}
-          <TabsContent value='photos'>
-            <InteractiveGallery
-              admin={true}
-              photos={photos}
-              eventId={eventId}
+          <Panel title='Event-Daten'>
+            <EventMetaForm
+              eventId={event.id}
+              initial={{
+                name: event.name,
+                location: event.location,
+                description: event.description,
+                date: eventDay(event.date),
+              }}
             />
-          </TabsContent>
-
-          {/* ---------------- Hochladen ----------------
-              Der Veranstalter bereitet Fotos am Rechner vor, bevor der erste
-              Gast scannt. Ueber den QR-Code ginge das auch, aber dann muesste
-              er sich die Gaeste-URL erst heraussuchen. */}
-          <TabsContent value='upload'>
-            <div className='mx-auto flex max-w-xl flex-col items-center gap-4'>
-              <div className='text-center'>
-                <h2 className='text-xl font-semibold'>Fotos vorbereiten</h2>
-                <p className='mt-1 text-sm text-muted-foreground'>
-                  Lade eigene Bilder hoch, bevor das Fest beginnt. Sie laufen
-                  in der Slideshow wie Gästefotos mit.
-                </p>
-              </div>
-              <PhotoUploadPresigned
-                eventId={eventId}
-                galerieHref={`/tenant/event/${eventId}`}
-                kontingent={kontingent}
-              />
-            </div>
-          </TabsContent>
-
-          {/* ---------------- QR ---------------- */}
-          <TabsContent value='qrcode' className='max-w-md mx-auto'>
-            <QRCodeGenerator eventId={eventId} />
-          </TabsContent>
-
-          {/* ---------------- Settings ---------------- */}
-          <TabsContent value='settings' className='max-w-md mx-auto space-y-6'>
-            <SlideshowSettings eventId={eventId} />
-            <ActiveScreens eventId={eventId} />
-          </TabsContent>
+          </Panel>
         </div>
-      </Tabs>
-    </main>
+
+        {/* Einlass und Screens zuerst auf schmalen Schirmen: das braucht man
+            vor Ort. */}
+        <div className='order-1 space-y-5 lg:order-2'>
+          <Panel title='Einlass' icon={<ScanLine className='size-4' />}>
+            <QRCodeGenerator eventId={event.id} />
+          </Panel>
+          <ActiveScreens eventId={event.id} />
+        </div>
+      </div>
+    </div>
+  )
+}
+
+function Kennzahl({
+  wert,
+  label,
+  gross = false,
+  warnung = false,
+}: {
+  wert: string
+  label: string
+  gross?: boolean
+  warnung?: boolean
+}) {
+  return (
+    <div>
+      <div
+        className={`font-semibold leading-none tabular-nums ${
+          gross ? 'text-3xl' : 'text-lg text-muted-foreground'
+        } ${warnung ? 'text-destructive' : ''}`}
+      >
+        {wert}
+      </div>
+      <div className='mt-1.5 text-[10px] uppercase tracking-[0.14em] text-muted-foreground'>
+        {label}
+      </div>
+    </div>
+  )
+}
+
+function OverviewSkeleton() {
+  return (
+    <div className='space-y-6'>
+      <div className='h-20 animate-pulse rounded-2xl bg-muted/40' />
+      <div className='grid gap-5 lg:grid-cols-[minmax(0,1fr)_320px]'>
+        <div className='h-96 animate-pulse rounded-2xl bg-muted/40' />
+        <div className='h-96 animate-pulse rounded-2xl bg-muted/40' />
+      </div>
+    </div>
   )
 }

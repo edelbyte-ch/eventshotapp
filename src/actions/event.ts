@@ -84,7 +84,7 @@ export async function updateEvent(eventId: string, formData: FormData) {
 
   revalidatePath('/tenant')
   revalidatePath('/tenant/events')
-  revalidatePath(`/tenant/event/${eventId}`)
+  revalidatePath(`/tenant/event/${eventId}`, 'layout')
   // Der Name steht auf der Gaesteseite.
   revalidatePath(`/event/${eventId}`)
 

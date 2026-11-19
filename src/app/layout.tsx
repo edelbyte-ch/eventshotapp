@@ -100,6 +100,9 @@ export default function RootLayout({
           defer
           src="https://umami.edelbyte.ch/script.js"
           data-website-id="81d33849-a760-41dd-9426-f32636c2d3ed"
+          // Nur auf der echten Domain zaehlen – Staging und lokale Tests
+          // verfaelschten sonst die Besucherzahlen.
+          data-domains="eventshot.ch,www.eventshot.ch"
         />
         {/* EdelDesk-Chat (KI-Assistent + Team), lädt erst nach dem Seitenaufbau */}
         <Script

@@ -62,7 +62,7 @@ export function DemoSection({ demo }: { demo: DemoEventInfo }) {
         <div className='flex shrink-0 flex-col gap-2 sm:w-56'>
           <Button asChild className='h-10 w-full font-semibold'>
             <Link href={`/tenant/event/${demo.id}`}>
-              Demo verwalten
+              Demo öffnen
               <ArrowRight className='h-4 w-4' />
             </Link>
           </Button>
