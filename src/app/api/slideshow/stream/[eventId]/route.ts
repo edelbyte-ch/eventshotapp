@@ -107,6 +107,21 @@ export async function GET(
     heartbeat = null
   }
 
+  // Geister-Screens: Schloss der Kunde den Beamer-Tab, rief Node cancel()
+  // nicht zuverlaessig auf. Der Heartbeat lief weiter, frischte lastPing
+  // alle 20 s auf und hielt den einzigen BASIC-Platz bis zum naechsten
+  // Container-Neustart besetzt ("Screen bereits aktiv"). Deshalb zwei
+  // unabhaengige Wege, den Abbruch zu bemerken: das Abort-Signal der Anfrage
+  // und ein Schreibversuch bei jedem Heartbeat.
+  const beenden = () => {
+    if (closed && !alive) return
+    stopStream()
+    prisma.slideshowSession
+      .deleteMany({ where: { id: sessionId } })
+      .catch(() => {})
+  }
+  req.signal.addEventListener('abort', beenden, { once: true })
+
   const stream = new ReadableStream({
     async start(controller) {
       let lastUpdate = new Date(0)
@@ -122,12 +137,22 @@ export async function GET(
 
       /* ---------- Heartbeat ---------- */
       heartbeat = setInterval(async () => {
-        if (!alive) return
+        if (!alive || req.signal.aborted) return beenden()
 
-        await prisma.slideshowSession.updateMany({
-          where: { id: sessionId },
-          data: { lastPing: new Date() },
-        })
+        // SSE-Kommentar: der Browser ignoriert ihn, aber ein toter Socket
+        // wirft hier. Nur wer ihn empfaengt, haelt seinen Platz.
+        try {
+          controller.enqueue(': ping\n\n')
+        } catch {
+          return beenden()
+        }
+
+        await prisma.slideshowSession
+          .updateMany({
+            where: { id: sessionId },
+            data: { lastPing: new Date() },
+          })
+          .catch(() => {})
       }, HEARTBEAT_INTERVAL)
 
       try {
@@ -136,6 +161,8 @@ export async function GET(
             where: { id: eventId },
             select: { photosUpdatedAt: true },
           })
+
+          if (req.signal.aborted) break
 
           if (evt?.photosUpdatedAt && evt.photosUpdatedAt > lastUpdate) {
             lastUpdate = evt.photosUpdatedAt
@@ -156,10 +183,7 @@ export async function GET(
     },
 
     cancel() {
-      stopStream()
-      prisma.slideshowSession
-        .deleteMany({ where: { id: sessionId } })
-        .catch(() => {})
+      beenden()
     },
   })
 
