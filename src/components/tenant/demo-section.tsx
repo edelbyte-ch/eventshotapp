@@ -21,7 +21,7 @@ export function DemoSection({ demo }: { demo: DemoEventInfo }) {
   const pct = Math.min(100, (demo.used / limit) * 100)
 
   return (
-    <Card className='rounded-2xl border border-primary/25 bg-linear-to-br from-primary/10 via-card/60 to-card/60 shadow-none'>
+    <Card className='gap-0 rounded-2xl border border-primary/25 py-0 bg-linear-to-br from-primary/10 via-card/60 to-card/60 shadow-none'>
       <CardContent className='flex flex-col gap-5 p-5 sm:flex-row sm:items-center sm:gap-8 sm:p-6'>
         <div className='min-w-0 flex-1 space-y-2'>
           <p className='text-[11px] font-semibold uppercase tracking-[0.16em] text-primary'>
