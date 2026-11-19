@@ -32,7 +32,7 @@ export function EventTabs({ eventId }: { eventId: string }) {
               <Link
                 href={tab.href}
                 aria-current={active ? 'page' : undefined}
-                className={`relative flex h-11 items-center px-3 text-sm transition-colors ${
+                className={`relative flex h-11 items-center px-2 text-sm transition-colors sm:px-3 ${
                   active
                     ? 'font-medium text-foreground'
                     : 'text-muted-foreground hover:text-foreground'

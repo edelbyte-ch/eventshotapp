@@ -194,7 +194,7 @@ function EventCard({
         </div>
 
         <div className='flex items-center justify-between gap-4 pl-[18px] sm:justify-end sm:pl-0'>
-          <div className='shrink-0 text-left sm:w-24 sm:text-right'>
+          <div className='shrink-0 whitespace-nowrap text-left sm:w-32 sm:text-right'>
             <div
               className={`text-xl font-semibold leading-none tabular-nums ${voll ? 'text-destructive' : ''}`}
             >
