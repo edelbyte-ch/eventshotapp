@@ -6,6 +6,7 @@ import { Camera, ChevronLeft, ChevronRight, Pause, Play } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 import { getEventPhotosSlideshow } from '@/actions/get-event-photos-slideshow'
 import { Button } from '@/components/ui/button'
+import { SCREEN_PING_INTERVAL } from '@/lib/slideshow-screens'
 
 type Photo = {
   id: string
@@ -77,6 +78,7 @@ export default function EventSlideshow({
   const [ready, setReady] = useState(false)
   const [progress, setProgress] = useState(0)
   const [blocked, setBlocked] = useState(false)
+  const [ended, setEnded] = useState(false)
 
   const startTimeRef = useRef<number>(performance.now())
   const rafRef = useRef<number | null>(null)
@@ -122,6 +124,18 @@ export default function EventSlideshow({
 
     const url = `/api/slideshow/stream/${eventId}?clientId=${clientIdRef.current}&code=${publicCode}`
 
+    // Lebenszeichen: nur solange dieser Browser pingt, belegt er einen Platz.
+    // Schliesst jemand den Tab oder haelt eine Firewall die Verbindung
+    // kuenstlich offen, ist der Platz nach 30 s wieder frei.
+    const pingen = () => {
+      if (stopped) return
+      fetch(
+        `/api/slideshow/ping/${eventId}?clientId=${clientIdRef.current}&code=${publicCode}`,
+        { method: 'POST', cache: 'no-store', keepalive: true },
+      ).catch(() => {})
+    }
+    const pingTimer = setInterval(pingen, SCREEN_PING_INTERVAL)
+
     const spaeterNeuVerbinden = () => {
       if (stopped || retry) return
       // 3s, 6s, 12s, 24s, dann alle 30s. Ein belegter Platz wird irgendwann
@@ -142,6 +156,7 @@ export default function EventSlideshow({
 
       es.onopen = () => {
         versuche = 0
+        pingen()
         // Beides zuruecksetzen: setPlaying(false) kam von der Sperre, nicht
         // vom Menschen. Ohne das bliebe die Wand nach dem Wiederverbinden auf
         // dem letzten Bild stehen.
@@ -152,6 +167,17 @@ export default function EventSlideshow({
       es.onmessage = async (e) => {
         versuche = 0
         const msg = JSON.parse(e.data)
+        if (msg.type === 'ended') {
+          // In den Event-Einstellungen beendet: nicht neu verbinden, sonst
+          // holte sich der Screen den eben freigegebenen Platz zurueck.
+          stopped = true
+          es?.close()
+          if (retry) clearTimeout(retry)
+          clearInterval(pingTimer)
+          setEnded(true)
+          setPlaying(false)
+          return
+        }
         if (msg.type === 'photos-updated') {
           const data = await getEventPhotosSlideshow(eventId)
           setPhotos(data)
@@ -187,6 +213,7 @@ export default function EventSlideshow({
     return () => {
       stopped = true
       if (retry) clearTimeout(retry)
+      clearInterval(pingTimer)
       es?.close()
     }
   }, [eventId, publicCode])
@@ -252,6 +279,23 @@ export default function EventSlideshow({
   /* -----------------------
      BLOCKED OVERLAY
   ----------------------- */
+  if (ended) {
+    return (
+      <div className='fixed inset-0 flex items-center justify-center bg-black text-white'>
+        <div className='text-center space-y-4'>
+          <p className='text-xl font-semibold'>Dieser Screen wurde beendet</p>
+          <p className='text-sm opacity-70'>
+            Er wurde in den Event-Einstellungen unter «Aktive Screens»
+            geschlossen.
+          </p>
+          <Button variant='secondary' onClick={() => window.location.reload()}>
+            Slideshow wieder starten
+          </Button>
+        </div>
+      </div>
+    )
+  }
+
   if (blocked) {
     return (
       <div className='fixed inset-0 flex items-center justify-center bg-black text-white'>
@@ -261,6 +305,11 @@ export default function EventSlideshow({
           </p>
           <p className='text-sm opacity-70'>
             Diese Slideshow läuft bereits auf einem anderen Bildschirm.
+          </p>
+          <p className='mx-auto max-w-md text-sm opacity-70'>
+            Läuft dort nichts mehr? In den Event-Einstellungen unter «Aktive
+            Screens» kannst du ihn beenden. Diese Seite verbindet sich danach
+            von selbst.
           </p>
         </div>
       </div>

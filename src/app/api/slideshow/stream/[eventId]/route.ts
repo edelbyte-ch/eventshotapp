@@ -1,8 +1,9 @@
 import type { NextRequest } from 'next/server'
 import prisma from '@/lib/prisma'
+import { activeScreensWhere, screenLimit } from '@/lib/slideshow-screens'
 
+/** Haelt die Verbindung warm und deckt tote Sockets auf. */
 const HEARTBEAT_INTERVAL = 20_000
-const SESSION_TIMEOUT = 30_000
 
 export async function GET(
   req: NextRequest,
@@ -38,14 +39,8 @@ export async function GET(
     return new Response('Event not found', { status: 404 })
   }
 
-  const SCREEN_LIMIT =
-    event.plan === 'ENTERPRISE'
-      ? Number.MAX_SAFE_INTEGER
-      : event.plan === 'PREMIUM'
-        ? 3
-        : 1
-
-  const activeWindow = new Date(Date.now() - SESSION_TIMEOUT)
+  const SCREEN_LIMIT = screenLimit(event.plan)
+  const userAgent = req.headers.get('user-agent')?.slice(0, 300) ?? null
 
   /* ----------------------------------
      Atomic Session Handling
@@ -60,10 +55,7 @@ export async function GET(
       })
 
       const activeScreens = await tx.slideshowSession.count({
-        where: {
-          eventId,
-          lastPing: { gt: activeWindow },
-        },
+        where: activeScreensWhere(eventId),
       })
 
       if (activeScreens >= SCREEN_LIMIT) {
@@ -76,6 +68,7 @@ export async function GET(
           clientId,
           plan: event.plan,
           lastPing: new Date(),
+          userAgent,
         },
       })
     })
@@ -140,29 +133,36 @@ export async function GET(
         if (!alive || req.signal.aborted) return beenden()
 
         // SSE-Kommentar: der Browser ignoriert ihn, aber ein toter Socket
-        // wirft hier. Nur wer ihn empfaengt, haelt seinen Platz.
+        // wirft hier. lastPing frischt dagegen nur der Browser selbst auf
+        // (/api/slideshow/ping) — siehe lib/slideshow-screens.ts.
         try {
           controller.enqueue(': ping\n\n')
         } catch {
-          return beenden()
+          beenden()
         }
-
-        await prisma.slideshowSession
-          .updateMany({
-            where: { id: sessionId },
-            data: { lastPing: new Date() },
-          })
-          .catch(() => {})
       }, HEARTBEAT_INTERVAL)
 
       try {
         while (alive) {
-          const evt = await prisma.event.findUnique({
-            where: { id: eventId },
-            select: { photosUpdatedAt: true },
-          })
+          const [evt, sitzung] = await Promise.all([
+            prisma.event.findUnique({
+              where: { id: eventId },
+              select: { photosUpdatedAt: true },
+            }),
+            prisma.slideshowSession.findUnique({
+              where: { id: sessionId },
+              select: { endedAt: true },
+            }),
+          ])
 
           if (req.signal.aborted) break
+
+          // In den Einstellungen beendet (oder von aussen abgeraeumt): dem
+          // Screen Bescheid geben, damit er nicht sofort neu verbindet.
+          if (!sitzung || sitzung.endedAt) {
+            send({ type: 'ended' })
+            break
+          }
 
           if (evt?.photosUpdatedAt && evt.photosUpdatedAt > lastUpdate) {
             lastUpdate = evt.photosUpdatedAt

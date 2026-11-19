@@ -3,6 +3,7 @@ import InteractiveGallery from '@/components/tenant/event/interactive-gallery'
 import PhotoUploadPresigned from '@/components/event/photo-upload-presigned'
 import { PhotoQuota } from '@/components/tenant/event/photo-quota'
 import QRCodeGenerator from '@/components/tenant/event/qr-code-generator'
+import ActiveScreens from '@/components/tenant/event/active-screens'
 import SlideshowSettings from '@/components/tenant/event/slideshow-settings'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { requireOwnedEventPage } from '@/lib/auth-guard'
@@ -113,8 +114,9 @@ const PageContent = async ({
           </TabsContent>
 
           {/* ---------------- Settings ---------------- */}
-          <TabsContent value='settings' className='max-w-md mx-auto'>
+          <TabsContent value='settings' className='max-w-md mx-auto space-y-6'>
             <SlideshowSettings eventId={eventId} />
+            <ActiveScreens eventId={eventId} />
           </TabsContent>
         </div>
       </Tabs>

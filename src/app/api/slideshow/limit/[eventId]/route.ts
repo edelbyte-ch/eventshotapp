@@ -1,8 +1,6 @@
 import type { NextRequest } from 'next/server'
 import prisma from '@/lib/prisma'
-
-/** Muss zum Stream passen — dort ist dasselbe Fenster hinterlegt. */
-const SESSION_TIMEOUT = 30_000
+import { activeScreensWhere, screenLimit } from '@/lib/slideshow-screens'
 
 /**
  * Billige Auskunft: ist noch ein Screen-Platz frei?
@@ -29,19 +27,13 @@ export async function GET(
     return new Response('Not found', { status: 404 })
   }
 
-  const limit =
-    event.plan === 'ENTERPRISE'
-      ? Number.MAX_SAFE_INTEGER
-      : event.plan === 'PREMIUM'
-        ? 3
-        : 1
+  const limit = screenLimit(event.plan)
 
   // Die eigene, vielleicht noch nicht abgeraeumte Sitzung nicht mitzaehlen —
   // sonst meldet der Beamer sich selbst als Blockierer.
   const active = await prisma.slideshowSession.count({
     where: {
-      eventId,
-      lastPing: { gt: new Date(Date.now() - SESSION_TIMEOUT) },
+      ...activeScreensWhere(eventId),
       ...(clientId ? { clientId: { not: clientId } } : {}),
     },
   })
