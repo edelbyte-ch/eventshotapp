@@ -109,9 +109,33 @@ export function EventMetaForm({
         />
       </div>
 
-      <Button type='submit' disabled={!geaendert || !gueltig || pending}>
-        {pending ? 'Wird gespeichert …' : 'Änderungen speichern'}
-      </Button>
+      {/* Knoepfe erst, wenn es etwas zu speichern gibt. Ein ausgegrauter
+          Speichern-Knopf sah im Ruhezustand wie ein Fehler aus. */}
+      {geaendert && (
+        <div className='flex flex-wrap items-center gap-2 border-t border-border/60 pt-4'>
+          <Button type='submit' disabled={!gueltig || pending}>
+            {pending ? 'Wird gespeichert …' : 'Speichern'}
+          </Button>
+          <Button
+            type='button'
+            variant='ghost'
+            disabled={pending}
+            onClick={() =>
+              setWerte({
+                name: initial.name,
+                location: initial.location ?? '',
+                description: initial.description ?? '',
+                date: initial.date,
+              })
+            }
+          >
+            Verwerfen
+          </Button>
+          <span className='text-xs text-muted-foreground'>
+            Ungespeicherte Änderungen
+          </span>
+        </div>
+      )}
     </form>
   )
 }
