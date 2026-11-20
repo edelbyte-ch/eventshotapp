@@ -21,3 +21,4 @@ overrides:
   zod: ^4.6.7
   glob: ^14.0.3
   minimatch: ^11.0.4
+  effect: ^3.22.1

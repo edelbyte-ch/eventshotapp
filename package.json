@@ -98,7 +98,7 @@
     "babel-plugin-react-compiler": "1.0.0",
     "baseline-browser-mapping": "^2.11.0",
     "node-html-markdown": "^2.0.0",
-    "prisma": "^7.10.0",
+    "prisma": "^7.10.1",
     "tailwindcss": "^4.3.3",
     "tailwindcss-animate": "^1.0.7",
     "tsx": "^4.21.0",
